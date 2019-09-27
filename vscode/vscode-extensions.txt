@@ -1,0 +1,22 @@
+> code --list-extensions
+
+alexanderbast.vscode-snazzy
+ccimage.jsonviewer
+cssho.vscode-svgviewer
+dbaeumer.vscode-eslint
+joaompinto.vscode-graphviz
+kodetech.electron-debug
+liviuschera.noctis
+ms-vscode.vscode-typescript-tslint-plugin
+msjsdiag.cordova-tools
+msjsdiag.debugger-for-chrome
+nobuhito.printcode
+nonylene.dark-molokai-theme
+PKief.material-icon-theme
+shd101wyy.markdown-preview-enhanced
+stuart.unique-window-colors
+Tandy.color-basic
+vscodevim.vim
+wayou.vscode-todo-highlight
+
+# code --install-extension NAME
