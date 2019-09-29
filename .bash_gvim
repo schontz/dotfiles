@@ -1,0 +1,2 @@
+source ~/.bash_profile
+PS1="[\w] \r\n$ "
