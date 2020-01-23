@@ -1,5 +1,0 @@
-set lines=40 columns=150
-set guifont=Consolas:h12
-set guioptions-=T
-colorscheme molokai
-

@@ -1,4 +1,7 @@
 > code --list-extensions
+> code --install-extension NAME
+
+# Ventura
 
 alexanderbast.vscode-snazzy
 ccimage.jsonviewer
@@ -19,4 +22,24 @@ Tandy.color-basic
 vscodevim.vim
 wayou.vscode-todo-highlight
 
-# code --install-extension NAME
+# Schools
+
+akamud.vscode-theme-onedark
+apollographql.vscode-apollo
+azemoh.theme-onedark
+Braver.vscode-solarized
+cssho.vscode-svgviewer
+dbaeumer.vscode-eslint
+dracula-theme.theme-dracula
+eamodio.gitlens
+esbenp.prettier-vscode
+formulahendry.auto-rename-tag
+HallerPatrick.solarized-autumn
+JamesBirtles.svelte-vscode
+mikestead.dotenv
+ms-vscode.vscode-typescript-tslint-plugin
+nonylene.dark-molokai-theme
+PKief.material-icon-theme
+vscodevim.vim
+wayou.vscode-todo-highlight
+zhuangtongfa.material-theme
