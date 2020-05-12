@@ -1,0 +1,6 @@
+{
+	"suggest.noselect": false,
+	"suggest.minTriggerInputLength": 2,
+	"suggest.snippetIndicator": "►",
+  "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "js", "ts", "jsx", "tsx"],
+}
