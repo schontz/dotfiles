@@ -5,5 +5,22 @@ alias la="ls -la"
 alias be="bundle exec "
 alias vim="/usr/local/bin/nvim"
 alias vi="vim"
+alias v="vim"
 alias gvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
 alias ag="ag --path-to-ignore ~/.agignore"
+alias c="cd"
+
+# Git
+alias gc="git commit -m"
+alias gca="git commit -a"
+alias gcam="git commit -a -m"
+alias gcb="git checkout -b"
+alias gpush="git push"
+alias gpo="git push origin"
+alias gpull="git pull"
+alias gpr="git pull --rebase"
+
+# Include custom aliases
+if [[ -f ~/.alias.local ]]; then
+  source ~/.alias.local
+fi
