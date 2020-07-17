@@ -3,13 +3,7 @@ export PATH="$HOME/.bin:$PATH"
 # recommended by brew doctor
 export PATH="/usr/local/bin:$PATH"
 
-# asdf
-# . $(brew --prefix asdf)/asdf.sh
-
 bindkey -v
-
-# jump
-[[ -f /usr/local/bin/jump ]] && eval "$(jump shell zsh)"
 
 # added by pdb
 bindkey "^P" up-line-or-search
@@ -46,7 +40,16 @@ ${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%
 fi
 
 # Local config
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# jump
+# [[ -f /usr/local/bin/jump ]] && eval "$(jump shell zsh)"
+
+# fasd
+eval "$(fasd --init auto)"
 
 # aliases
-[[ -f ~/.alias ]] && source ~/.alias
+[ -f ~/.alias ] && source ~/.alias
