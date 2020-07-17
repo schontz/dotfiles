@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# install homebrew
-if [ ! -f /usr/local/bin/brew ]; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+if [ "$(uname)" == "Darwin" ]; then
+  echo -e "\\n\\nRunning on macOS"
+
+  if test ! "$( command -v brew )"; then
+    echo "Installing homebrew"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  fi
 fi
 
 # get script directory
