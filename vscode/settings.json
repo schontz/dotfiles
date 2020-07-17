@@ -1,74 +1,92 @@
 {
-	"workbench.iconTheme": "material-icon-theme",
-	"editor.wordWrap": "on",
-	"terminal.external.osxExec": "iTerm.app",
-	"html.autoClosingTags": false,
-	"workbench.tree.indent": 16,
-	"vim.handleKeys": {
-		"<C-d>": true,
-		"<C-a>": true,
-		"<C-k>": true
-	},
-	"files.exclude": {
-		"**/.git": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/.DS_Store": true
-	},
-	"search.exclude": {
-		"**/node_modules": true,
-		"**/bower_components": true,
-		"**/.#*": true
-	},
-	"search.smartCase": true,
-	"window.newWindowDimensions": "inherit",
-	"search.showLineNumbers": true,
-	"todohighlight.isEnable": true,
-	"todohighlight.keywords": [
-		{
-			"text": "TODO",
-			"color": "#000",
-			"backgroundColor": "rgba(255,189,42,0.8)",
-			"overviewRulerColor": "rgba(255,189,42,0.8)"
-		},
-		{
-			"text": "FIXME",
-			"color": "#000",
-			"backgroundColor": "rgba(240,98,146,0.8)",
-			"overviewRulerColor": "rgba(240,98,146,0.8)"
-		},
-		{
-			"text": "NOTE:",
-			"color": "#eee",
-			"backgroundColor": "rgba(100,100,255,0.8)",
-			"overviewRulerColor": "rgba(100,100,255,0.8)"
-		}
-	],
-	"editor.fontSize": 17,
-	"auto-rename-tag.activationOnLanguage": [
-		"html"
-	],
-	"editor.autoClosingBrackets": "never",
-	"terminal.integrated.fontSize": 15,
-	"editor.tabSize": 2,
-	"window.zoomLevel": 0,
-	"terminal.integrated.rightClickBehavior": "copyPaste",
-	"[typescript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"[javascript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"[typescriptreact]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"typescript.updateImportsOnFileMove.enabled": "always",
-	"editor.formatOnSave": true,
-	"[json]": {
-		"editor.defaultFormatter": "vscode.json-language-features"
-	},
-	"editor.fontFamily": "'SF Mono', Menlo, Monaco, 'Courier New', monospace",
-	"workbench.fontAliasing": "auto",
-	"terminal.integrated.fontFamily": "Menlo",
-	"workbench.colorTheme": "Monokai"
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.wordWrap": "on",
+  "terminal.external.osxExec": "iTerm.app",
+  "html.autoClosingTags": false,
+  "workbench.tree.indent": 16,
+  "vim.handleKeys": {
+    "<C-d>": true,
+    "<C-a>": true,
+    "<C-k>": true
+  },
+  "vim.leader": ",",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<leader>", "r", "n"],
+      "commands": ["editor.action.rename"]
+    },
+    {
+      "before": ["g", "r"],
+      "commands": ["editor.action.goToReferences"]
+    },
+    {
+      "before": ["<leader>", "q", "f"],
+      "commands": ["editor.action.quickFix"]
+    },
+    {
+      "before": ["K"],
+      "commands": ["editor.action.showHover"]
+    }
+  ],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/.#*": true
+  },
+  "search.smartCase": true,
+  "window.newWindowDimensions": "inherit",
+  "search.showLineNumbers": true,
+  "todohighlight.isEnable": true,
+  "todohighlight.keywords": [
+    {
+      "text": "TODO",
+      "color": "#000",
+      "backgroundColor": "rgba(255,189,42,0.8)",
+      "overviewRulerColor": "rgba(255,189,42,0.8)"
+    },
+    {
+      "text": "FIXME",
+      "color": "#000",
+      "backgroundColor": "rgba(240,98,146,0.8)",
+      "overviewRulerColor": "rgba(240,98,146,0.8)"
+    },
+    {
+      "text": "NOTE:",
+      "color": "#eee",
+      "backgroundColor": "rgba(100,100,255,0.8)",
+      "overviewRulerColor": "rgba(100,100,255,0.8)"
+    }
+  ],
+  "editor.fontSize": 17,
+  "auto-rename-tag.activationOnLanguage": ["html"],
+  "editor.autoClosingBrackets": "never",
+  "terminal.integrated.fontSize": 15,
+  "editor.tabSize": 2,
+  "window.zoomLevel": 1,
+  "terminal.integrated.rightClickBehavior": "copyPaste",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.formatOnSave": true,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "editor.fontFamily": "'_SF Mono', Menlo, Monaco, 'Courier New', monospace",
+  "workbench.fontAliasing": "auto",
+  "terminal.integrated.fontFamily": "Menlo",
+  "workbench.colorTheme": "Monokai",
+  "telemetry.enableTelemetry": false
 }
