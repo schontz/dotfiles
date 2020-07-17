@@ -2,6 +2,9 @@
 
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "\\n\\nRunning on macOS"
+  
+  # Sleep shortcut Cmd-Shift-Option-/
+  defaults write -g NSUserKeyEquivalents -dict-add Sleep "@^$/"
 
   if test ! "$( command -v brew )"; then
     echo "Installing homebrew"
