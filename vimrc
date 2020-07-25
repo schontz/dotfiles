@@ -42,16 +42,18 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     Plug 'christophermca/meta5'
   " }}}
 
-  Plug 'sheerun/vim-polyglot' " all lang syntax
+  " all lang syntax
+  Plug 'sheerun/vim-polyglot'
 
   " COC completion and extension
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+  " Git goodness
   Plug 'tpope/vim-fugitive'
 
   " Find and replace
-  Plug 'brooth/far.vim'
-  Plug 'mileszs/ack.vim'
+  " Plug 'brooth/far.vim'
+  " Plug 'mileszs/ack.vim'
 
   Plug 'scrooloose/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -134,6 +136,8 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   :autocmd BufEnter *.png,*.jpg,*gif exec "!open ".expand("%") | :bw
 
   set wildignore+=*.pyc,*.o,*.obj,*.svn,*.swp,*.class,*.hg,*.DS_Store,*.min.*
+
+  set linebreak
 " }}}
 
 " Shortcuts {{{
@@ -150,6 +154,9 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     nnoremap <leader>vg :silent sp ~/.gvimrc<CR>
   endif
 
+  " VS Code
+  nnoremap <leader>co :silent execute '!code .'<CR>
+
   " CD to directory of current buffer (only for that buffer)
   nnoremap <leader>cd :silent call CDHere()<CR>:pwd<CR>
   if !exists("*CDHere")
@@ -160,14 +167,19 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     endfunction
   endif
 
-  " Cmd+C copy
-  vnoremap <D-c> "+y
+  " Ctrl+C copy
+  vnoremap <C-c> "+y
 
   " Cmd+V paste in insert mode
   set pastetoggle=<F10>
   inoremap <D-v> <F10><C-r>+<F10>
 
-  set linebreak
+  " Make Y behave like C and D
+  nnoremap Y y$
+
+  " Keep selection after indent/unindent
+  " vnoremap > >gv
+  " vnoremap < <gv
 
   " Pretty print JSON
   map <leader>on :silent :%!python -m json.tool<CR>
@@ -201,6 +213,14 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   endif
 
   " NERDTree {{{
+    " function! NERDTreeToggleAndFind()
+    "   if g:NERDTree.IsOpen()
+    "     :NERDTreeToggle<CR>
+    "   else
+    "     :NERDTreeFind<CR>
+    "   endif
+    " endfunction
+
     map <C-n> :NERDTreeToggle<CR>
     let NERDTreeRespectWildIgnore=1
     let NERDTreeShowHidden=1
@@ -248,17 +268,19 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     " let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
   " }}}
 
-  " FZF
-  map <C-P> :GFiles<CR>
-  map <C-A> :Buffers<CR>
+  " FZF {{{
+    map <C-P> :Files<CR>
+    map <C-A> :Buffers<CR>
+    map <C-F> :execute 'Rg ' . input('Rg/')<CR>
+  " }}}
 
   " Far/Ack {{{
-    if executable('ag')
-      let g:ackprg = 'ag --vimgrep'
-    endif
-    cnoreabbrev Ack Ack!
-    nnoremap <C-F> :Ack!<Space>
-    nnoremap <C-G> :AckFromSearch<Enter>
+  " if executable('ag')
+  "   let g:ackprg = 'ag --vimgrep'
+  " endif
+  " cnoreabbrev Ack Ack!
+  " nnoremap <C-F> :Ack!<Space>
+  " nnoremap <C-G> :AckFromSearch<Enter>
   " }}}
 
 " }}}
