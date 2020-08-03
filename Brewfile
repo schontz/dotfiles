@@ -1,0 +1,7 @@
+brew "asdf"
+brew "fasd"
+brew "fzf"
+brew "jump"
+brew "neovim"
+brew "ripgrep"
+brew "wget"
