@@ -15,6 +15,12 @@ fi
 # get script directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# zsh set up
+mkdir -p ~/.zsh/configs
+mkdir -p ~/.zsh/functions
+cp $DIR/zsh/configs/* ~/.zsh/configs/
+cp $DIR/zsh/functions/* ~/.zsh/functions/
+
 # alias to our dot files
 ln -s $DIR/zshrc ~/.zshrc
 ln -s $DIR/alias ~/.alias
