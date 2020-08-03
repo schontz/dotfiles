@@ -10,6 +10,8 @@ if [ "$(uname)" == "Darwin" ]; then
     echo "Installing homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
+  
+  brew bundle
 fi
 
 # get script directory
