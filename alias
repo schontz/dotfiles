@@ -11,14 +11,17 @@ alias ag="ag --path-to-ignore ~/.agignore"
 alias c="cd"
 
 # Git
+alias gb="git browse"
 alias gc="git commit -m"
 alias gca="git commit -a"
 alias gcam="git commit -a -m"
 alias gcb="git checkout -b"
+alias gd="git diff"
 alias gpush="git push"
 alias gpo="git push origin"
 alias gpull="git pull"
 alias gpr="git pull --rebase"
+alias gco="git co"
 
 # Include custom aliases
 if [[ -f ~/.alias.local ]]; then
