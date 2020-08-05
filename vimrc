@@ -47,6 +47,7 @@ let g:python3_host_prog = '/usr/local/bin/python3'
 
   " COC completion and extension
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'antoinemadec/coc-fzf'
 
   " Git goodness
   Plug 'tpope/vim-fugitive'
@@ -58,7 +59,6 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   Plug 'scrooloose/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'scrooloose/nerdcommenter'
-  Plug 'scrooloose/nerdtree-project-plugin'
 
   Plug 'airblade/vim-gitgutter'
   Plug 'moll/vim-bbye'
@@ -132,8 +132,7 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   endif
 
   " Open images via Finder/Preview
-  " :autocmd BufEnter *.png,*.jpg,*gif exec "! ~/.iterm2/imgcat ".expand("%") | :bw
-  :autocmd BufEnter *.png,*.jpg,*gif exec "!open ".expand("%") | :bw
+  autocmd BufEnter *.png,*.jpg,*gif silent exec "!open ".expand("%") | :bw
 
   set wildignore+=*.pyc,*.o,*.obj,*.svn,*.swp,*.class,*.hg,*.DS_Store,*.min.*
 
@@ -192,8 +191,6 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   endif
   " Quit all
   command! Q qa
-  " Save
-  nmap WW :w<CR>
 
   " Zoom function
   nmap <leader>z <Plug>Zoom
@@ -204,13 +201,12 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " Fugitive
   let g:fugitive_dynamic_colors = 0
 
-  " Deoplete
-  let g:deoplete#enable_at_startup = 1
-
-  " COC config
-  if filereadable($HOME . "/.config/nvim/cocrc.vim")
-    source ~/.config/nvim/cocrc.vim
-  endif
+  " COC {{{
+    if filereadable($HOME . "/.config/nvim/cocrc.vim")
+      source ~/.config/nvim/cocrc.vim
+    endif
+    let g:coc_fzf_preview = ''
+  " }}}
 
   " NERDTree {{{
     " function! NERDTreeToggleAndFind()
@@ -272,6 +268,8 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     map <C-P> :Files<CR>
     map <C-A> :Buffers<CR>
     map <C-F> :execute 'Rg ' . input('Rg/')<CR>
+    let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 } }
+    let $FZF_DEFAULT_OPTS = '--layout=default'
   " }}}
 
   " Far/Ack {{{
@@ -291,4 +289,5 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
   endif
   colorscheme wombat256mod
+  autocmd WinEnter,FileType gitcommit colorscheme dracula
 " }}}
