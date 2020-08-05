@@ -1,0 +1,49 @@
+# ============================
+# @schontz/dotfiles/gitconfig
+# ============================
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[alias]
+  b = branch
+
+  # Checkout branch with fzf list
+  co = !git for-each-ref --format='%(refname:short)' refs/heads | fzf --height 50% --preview='git log {}' | xargs git checkout
+
+  # repo name
+  repo-name = !basename `git rev-parse --show-toplevel`
+
+  # c/o https://gist.github.com/robmiller/6018582
+  # Get the current branch name (not so useful in itself, but used in
+  # other aliases)
+  branch-name = "!git rev-parse --abbrev-ref HEAD"
+  # Push the current branch to the remote "origin", and set it to track
+  # the upstream branch
+  publish = "!git push -u origin $(git branch-name)"
+  # Delete the remote version of the current branch
+  unpublish = "!git push -d origin $(git branch-name)"
+  # Interactively rebase all the commits on the current branch
+  rebase-branch = "!git rebase -i `git merge-base master HEAD`"
+
+  # Find the commits that were introduced by a merge
+  merge-log = "!git log `git merge-span .. $1`"
+  # Show the changes that were introduced by a merge
+  merge-diff = "!git diff `git merge-span ... $1`"
+  # As above, but in your difftool
+  merge-difftool = "!git difftool `git merge-span ... $1`"
+
+  # Interactively rebase all the commits on the current branch
+  rebase-branch = "!git rebase -i `git merge-base master HEAD`"
+
+  # Unstage any files that have been added to the staging area
+  unstage = reset HEAD
+  # Show changes that have been staged
+  diffc = diff --cached
+[core]
+  excludesfile = ~/.gitignore
+  editor = nvim -c \"colorscheme dracula\"
+[commit]
+  verbose = true
