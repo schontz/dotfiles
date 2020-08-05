@@ -34,3 +34,9 @@ ln -s $DIR/config/nvim/plugin ~/.config/nvim/
 
 # fzf
 ln -s $DIR/fzf.zsh ~/.fzf.zsh
+
+# git
+if [ `cat ~/.gitconfig | grep START_DOTFILES | wc -l` -gt 0]
+then
+  cat gitconfig >> ~/.gitconfig
+fi
