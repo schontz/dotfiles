@@ -171,10 +171,6 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " Ctrl+C copy
   vnoremap <C-c> "+y
 
-  " Cmd+V paste in insert mode
-  set pastetoggle=<F10>
-  inoremap <D-v> <F10><C-r>+<F10>
-
   " Make Y behave like C and D
   nnoremap Y y$
 
@@ -268,7 +264,7 @@ let g:python3_host_prog = '/usr/local/bin/python3'
 
   " FZF {{{
     map <C-P> :Files<CR>
-    map <C-A> :Buffers<CR>
+    map <leader>p :Buffers<CR>
     map <C-F> :execute 'Rg ' . input('Rg/')<CR>
     let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 } }
     let $FZF_DEFAULT_OPTS = '--layout=default'
