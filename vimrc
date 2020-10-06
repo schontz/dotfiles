@@ -42,8 +42,10 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     Plug 'christophermca/meta5'
   " }}}
 
-  " all lang syntax
-  Plug 'sheerun/vim-polyglot'
+  " Syntax highlighting {{{
+    Plug 'sheerun/vim-polyglot'
+    Plug 'neoclide/jsonc.vim' 
+  " }}}
 
   " COC completion and extension
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -289,5 +291,8 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
   endif
   colorscheme wombat256mod
-  autocmd WinEnter,FileType gitcommit colorscheme dracula
+" }}}
+
+" Manual syntax detection (vim-polyglot does most auto) {{{
+  autocmd BufNewFile,BufRead tsconfig.json setlocal filetype=jsonc
 " }}}
