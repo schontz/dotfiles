@@ -10,6 +10,7 @@ bindkey "^P" up-line-or-search
 
 export VISUAL=nvim
 export EDITOR=nvim
+export GIT_EDITOR="$VISUAL"
 
 # From thoughtbot dotfiles
 # load custom executable functions

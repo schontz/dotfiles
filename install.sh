@@ -33,7 +33,7 @@ ln -s $DIR/vimrc ~/.vimrc
 ln -s $DIR/gvimrc ~/.gvimrc
 mkdir -p ~/.config/nvim
 ln -s $DIR/config/nvim/coc-settings.json ~/.config/nvim/
-ln -s $DIR/config/nvim/cocrc.vim ~/.config/nvim/
+ln -s $DIR/config/cocrc.vim ~/.cocrc.vim
 ln -s $DIR/config/nvim/plugin ~/.config/nvim/
 
 # fzf

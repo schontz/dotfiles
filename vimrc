@@ -1,21 +1,26 @@
 set nocompatible
 
-let g:python2_host_prog = '/usr/local/bin/python'
-let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python2_host_prog = '/Users/dschontz/.asdf/shims/python2'
+let g:python3_host_prog = '/Users/dschontz/.asdf/shims/python3'
 
 " VimPlug {{{
   " ensure vim-plug is installed and then load it
-  if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+  if empty(glob('~/.config/nvim/autoload/plug.vim'))
+    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
       \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
   endif
   call plug#begin('~/.config/nvim/plugged')
 
-  Plug 'vim-airline/vim-airline-themes'
-  Plug 'vim-airline/vim-airline'
-  " Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'tpope/vim-surround'
+  " Plug 'vim-airline/vim-airline'
+  " Plug 'vim-airline/vim-airline-themes'
+
+  " lightline {{{
+    " Plug 'itchyny/lightline.vim'
+    " Plug 'mengelbrecht/lightline-bufferline'
+  " }}}
+
+  " Plug 'tpope/vim-surround'
 
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': '-> fzf#install()' }
   Plug 'junegunn/fzf.vim'
@@ -23,23 +28,8 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " themes {{{
     " Plug 'tomasr/molokai'
     Plug 'dracula/vim', { 'name': 'dracula' }
-    Plug 'mhartington/oceanic-next'
-    Plug 'tomasiser/vim-code-dark'
-    Plug 'nanotech/jellybeans.vim'
-    Plug 'marcopaganini/termschool-vim-theme'
-    Plug 'morhetz/gruvbox'
-    Plug 'tomasr/molokai'
-    Plug 'gosukiwi/vim-atom-dark'
-    Plug 'jacoborus/tender.vim'
-    Plug 'sjl/badwolf'
-    Plug 'jdsimcoe/abstract.vim'
-    Plug 'ayu-theme/ayu-vim'
-    Plug 'tomasr/molokai'
-    Plug 'AlessandroYorba/Sierra'
-    Plug 'jaredgorski/SpaceCamp'
+    " Plug 'mhartington/oceanic-next'
     Plug 'vim-scripts/wombat256.vim'
-    Plug 'vim-scripts/twilight256.vim'
-    Plug 'christophermca/meta5'
   " }}}
 
   " Syntax highlighting {{{
@@ -54,20 +44,16 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " Git goodness
   Plug 'tpope/vim-fugitive'
 
-  " Find and replace
-  " Plug 'brooth/far.vim'
-  " Plug 'mileszs/ack.vim'
-
   Plug 'scrooloose/nerdtree'
-  Plug 'Xuyuanp/nerdtree-git-plugin'
-  Plug 'scrooloose/nerdcommenter'
+  " Plug 'Xuyuanp/nerdtree-git-plugin'
+  " Plug 'scrooloose/nerdcommenter'
 
   Plug 'airblade/vim-gitgutter'
   Plug 'moll/vim-bbye'
 
   " Load last
-  Plug 'ryanoasis/vim-devicons'
-  Plug 'vwxyutarooo/nerdtree-devicons-syntax'
+  " Plug 'ryanoasis/vim-devicons'
+  " Plug 'vwxyutarooo/nerdtree-devicons-syntax'
 
   " All of your Plugins must be added before the following line
   call plug#end()			" required
@@ -115,11 +101,16 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " nnoremap <C-H> <C-W><C-H>
 
   " Stop highlighting
-  nnoremap <leader>j :noh<CR><Left> " stop highlighting
+  nnoremap <leader>j :noh<CR><Left>
 
   " Silent (no bells/beeps)
   set vb t_vb= 
   set belloff=all
+
+  " Show preview on replace
+  if has("nvim")
+    set inccommand=nosplit
+  endif
 
   " Make backspace like other programs
   set backspace=indent,eol,start
@@ -181,6 +172,8 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " Pretty print JSON
   map <leader>on :silent :%!python -m json.tool<CR>
 
+  " Save
+  map <C-S> :w<CR>
   " Save all
   command! W wall
   " Save and quit all
@@ -198,13 +191,6 @@ let g:python3_host_prog = '/usr/local/bin/python3'
 
   " Fugitive
   let g:fugitive_dynamic_colors = 0
-
-  " COC {{{
-    if filereadable($HOME . "/.config/nvim/cocrc.vim")
-      source ~/.config/nvim/cocrc.vim
-    endif
-    let g:coc_fzf_preview = ''
-  " }}}
 
   " NERDTree {{{
     " function! NERDTreeToggleAndFind()
@@ -240,45 +226,63 @@ let g:python3_host_prog = '/usr/local/bin/python3'
   " }}}
 
   " Airline {{{
+  if (match(&rtp, 'vim-airline') > -1)
     let g:airline#extensions#tabline#enabled = 1
     " let g:airline_theme='base16_shapeshifter'
-    let g:airline_theme='base16_default'
     let g:airline#extensions#tabline#formatter = 'jsformatter'
     let g:airline_powerline_fonts = 1
     let g:airline#extensions#tabline#left_sep = ' '
     let g:airline#extensions#tabline#left_alt_sep = '|'
+  endif
+  if (match(&rtp, 'vim-airline-themes') > -1)
+    let g:airline_theme='base16_default'
+  else
+    let g:airline_theme='dracula'
+  endif
+  " }}}
+
+  " Lightline {{{
+    if (match(&rtp, 'lightline') > -1)
+      if filereadable($HOME . "/.config/nvim/statusline.vim")
+        source ~/.config/nvim/statusline.vim
+      else
+        let g:lightline = {
+              \ 'colorscheme': 'wombat',
+              \ 'active': {
+              \   'left': [ [ 'mode', 'paste' ],
+              \             [ 'gitbranch', 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+              \ },
+              \ 'component_function': {
+              \   'coc_status': 'coc#status',
+              \   'gitbranch': 'FugitiveHead'
+              \ },
+              \ }
+      endif
+    end
   " }}}
 
   let g:javascript_plugin_jsdoc = 1
-
-  let g:far#source='rgnvim'
-
-  " CtrlP {{{
-    " let g:ctrlp_show_hidden = 1
-    " let g:ctrlp_custom_ignore = {
-    "   \ 'dir':  '\v[\/]\.?(CVS|node_modules|bower_components|git|hg|svn)$',
-    "   \ 'file': '\v\.(exe|so|dll)$'
-    "   \ }
-    " let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-  " }}}
 
   " FZF {{{
     map <C-P> :Files<CR>
     map <leader>p :Buffers<CR>
     map <C-F> :execute 'Rg ' . input('Rg/')<CR>
+
     let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 } }
     let $FZF_DEFAULT_OPTS = '--layout=default'
   " }}}
 
-  " Far/Ack {{{
-  " if executable('ag')
-  "   let g:ackprg = 'ag --vimgrep'
-  " endif
-  " cnoreabbrev Ack Ack!
-  " nnoremap <C-F> :Ack!<Space>
-  " nnoremap <C-G> :AckFromSearch<Enter>
+  " COC {{{
+    if (match(&rtp, 'coc.nvim') > -1)
+      if filereadable($HOME . "/.cocrc.vim")
+        source ~/.cocrc.vim
+      endif
+      " Debug errors
+      " let g:node_client_debug = 1
+      let g:coc_fzf_preview = ''
+    endif
   " }}}
-
+  
 " }}}
 
 " Theme and colors {{{
@@ -286,7 +290,8 @@ let g:python3_host_prog = '/usr/local/bin/python3'
     hi InactiveWindow ctermbg=237
     set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
   endif
-  colorscheme wombat256mod
+  silent! colorscheme wombat256mod
+  map <leader>c :colorscheme wombat256mod<CR>
 " }}}
 
 " Manual syntax detection (vim-polyglot does most auto) {{{

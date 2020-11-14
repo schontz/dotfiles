@@ -18,9 +18,22 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 
 export FZF_DEFAULT_OPTS="--reverse --border=horizontal"
 
-# https://gist.github.com/junegunn/8b572b8d4b5eddd8b85e5f4d40f17236
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+--color=dark
+--color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
+--color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+'
+
+# https://junegunn.kr/2016/07/fzf-git/
+#
 # GIT heart FZF
 # -------------
+# CTRL-G CTRL-F for files
+# CTRL-G CTRL-B for branches
+# CTRL-G CTRL-A for all branches
+# CTRL-G CTRL-T for tags
+# CTRL-G CTRL-R for remotes
+# CTRL-G CTRL-H for commit hashes
 
 is_in_git_repo() {
   git rev-parse HEAD > /dev/null 2>&1
@@ -38,13 +51,18 @@ git_f() {
   cut -c4- | sed 's/.* -> //'
 }
 
+git_a() {
+  is_in_git_repo || return
+  git for-each-ref --format='%(refname:short)' | sort |
+  fzf-down --ansi --multi --tac --preview-window right:70% \
+    --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %al %s" {} | head -'$LINES 
+}
+
 git_b() {
   is_in_git_repo || return
-  git branch -a --color=always | grep -v '/HEAD\s' | sort |
+  git for-each-ref --format='%(refname:short)' refs/heads | sort |
   fzf-down --ansi --multi --tac --preview-window right:70% \
-    --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
+    --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %al %s" {} | head -'$LINES 
 }
 
 git_t() {
@@ -67,7 +85,7 @@ git_r() {
   is_in_git_repo || return
   git remote -v | awk '{print $1 "\t" $2}' | uniq |
   fzf-down --tac \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
+    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %al %s" {1} | head -200' |
   cut -d$'\t' -f1
 }
 
@@ -86,6 +104,5 @@ bind-git-helper() {
     eval "bindkey '^g^$c' fzf-g$c-widget"
   done
 }
-bind-git-helper f b t r h
+bind-git-helper f b t r h a
 unset -f bind-git-helper
-
