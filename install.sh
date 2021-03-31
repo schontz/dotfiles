@@ -3,8 +3,14 @@
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "\\n\\nRunning on macOS"
   
+  # Customize MacOS Defaults
+  # https://macos-defaults.com/
+
   # Sleep shortcut Cmd-Shift-Option-/
   # defaults write -g NSUserKeyEquivalents -dict-add Sleep "@^$/"
+
+  # Remove shadow from window screenshots
+  defaults write com.apple.screencapture disable-shadow -bool true
 
   if test ! "$( command -v brew )"; then
     echo "Installing homebrew"
@@ -13,6 +19,9 @@ if [ "$(uname)" == "Darwin" ]; then
     echo "Installing brew bundle"
     brew bundle
   fi
+else
+  echo "Cloning asdf"
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
 fi
 
 # get script directory

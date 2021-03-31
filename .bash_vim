@@ -1,2 +1,0 @@
-source ~/.bash_profile
-PS1='\[\e[1;35m\][\u:\w]\[\e[m\] \[\e[1;32m\]<vim>\[\e[m\] \[\e[36m\]$(git_branch)\[\e[m\] \n$ '

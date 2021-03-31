@@ -1,0 +1,28 @@
+- defaults:
+    link:
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.alias: 
+    ~/.base_profile: 
+    ~/.fzf.zsh: 
+    ~/.gitconfig_custom: 
+    ~/.gitignore: 
+    ~/.gvimrc: 
+    ~/.inputrc: 
+    ~/.p10k.zsh: 
+    ~/.profile: 
+    ~/.vimrc: 
+    ~/.zshrc: 
+    ~/.config/nvim:
+      create: true
+      path: config/nvim
+    ~/.config/zsh
+      create: true
+      path: config/zsh
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
+  - ./setup.sh
