@@ -4,6 +4,9 @@
 
 - clean: ['~']
 
+- shell:
+  - [./setup.sh, Custom setup scripts]
+
 - link:
     ~/.alias: 
     ~/.base_profile: 
@@ -25,4 +28,4 @@
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
-  - ./setup.sh
+  - [./setup.sh, Custom setup scripts]

@@ -1,5 +1,9 @@
 #!/bin/bash
 # Custom setup scripts
+
+# Install ohmyzsh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "\\n\\nRunning on macOS"
   
@@ -19,6 +23,8 @@ if [ "$(uname)" == "Darwin" ]; then
     echo "Installing brew bundle"
     brew bundle
   fi
+
+  git clone https://github.com/pndurette/zsh-lux.git ~/.oh-my-zsh/custom/plugins/
 else
   echo "Cloning asdf"
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
