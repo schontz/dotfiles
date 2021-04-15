@@ -5,7 +5,7 @@
 - clean: ['~']
 
 - shell:
-  - [./setup.sh, Custom setup scripts]
+  - [./install-helper.sh, Custom install scripts]
 
 - link:
     ~/.alias: 
@@ -28,4 +28,3 @@
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
-  - [./setup.sh, Custom setup scripts]
