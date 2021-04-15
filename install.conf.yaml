@@ -5,7 +5,7 @@
 - clean: ['~']
 
 - shell:
-  - [./install-helper.sh, Custom install scripts]
+  - [bash install-helper.sh, Custom install scripts]
 
 - link:
     ~/.alias: 
