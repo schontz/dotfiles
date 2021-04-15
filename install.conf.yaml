@@ -9,25 +9,25 @@
 
 - link:
     ~/.alias: 
-    ~/.base_profile: 
+    ~/.bash_profile: 
     ~/.fzf.zsh: 
     ~/.gitconfig_custom: 
     ~/.gitignore: 
     ~/.gvimrc: 
     ~/.inputrc: 
     ~/.p10k.zsh: 
-    ~/.profile: 
     ~/.vimrc: 
     ~/.zshrc: 
-    ~/.config/git
+    ~/.config/:
+      glob: true
+      path: config/*
+      relink: true
+      exclude: [ config/nvim ]
+    ~/.config/nvim/:
       create: true
-      path: config/git
-    ~/.config/nvim:
-      create: true
-      path: config/nvim
-    ~/.config/zsh
-      create: true
-      path: config/zsh
+      glob: true
+      path: config/nvim/*
+      relink: true
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
