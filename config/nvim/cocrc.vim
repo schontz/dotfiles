@@ -1,5 +1,5 @@
 " install default plugins
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-prettier', 'coc-css']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-prettier', 'coc-css', 'coc-jest']
 
 " if hidden is not set, TextEdit might fail.
 set hidden
@@ -92,8 +92,8 @@ augroup mygroup
 augroup end
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>af <Plug>(coc-codeaction-selected)
+nmap <leader>af <Plug>(coc-codeaction-selected)
 
 " Remap for do codeAction of current line
 nmap <leader>ac  <Plug>(coc-codeaction)
@@ -120,7 +120,7 @@ command! -nargs=0 Format :call CocAction('format')
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
 " Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Using CocList
 " Show all diagnostics
@@ -142,3 +142,13 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " Add :Prettier command
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+" Jest
+" Run jest for current project
+command! -nargs=0 Jest :call  CocAction('runCommand', 'jest.projectTest')
+
+" Run jest for current file
+command! -nargs=0 JestCurrent :call  CocAction('runCommand', 'jest.fileTest', ['%'])
+
+" Run jest for current test
+nnoremap <leader>te :call CocAction('runCommand', 'jest.singleTest')<CR>
