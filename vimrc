@@ -27,11 +27,10 @@ let g:python3_host_prog = '~/.asdf/shims/python3'
   Plug 'junegunn/fzf.vim'
 
   " themes {{{
-    " Plug 'tomasr/molokai'
     Plug 'dracula/vim', { 'name': 'dracula' }
-    " Plug 'mhartington/oceanic-next'
     Plug 'vim-scripts/wombat256.vim'
     Plug 'lifepillar/vim-solarized8'
+    Plug 'tomasiser/vim-code-dark'
   " }}}
 
   " Syntax highlighting {{{

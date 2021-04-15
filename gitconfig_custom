@@ -12,10 +12,16 @@
   b = branch
 
   # Checkout branch with fzf list
-  co = !git for-each-ref --format='%(refname:short)' refs/heads | fzf --height 50% --preview='git log {}' | xargs git checkout
+  co = !git for-each-ref --format='%(refname:short)' refs/heads | fzf --height 50% --preview='git log {} --oneline --color=always --graph --date=short' | xargs git checkout
+
+  # Checkout master
+  cm = "!git checkout $(git master-name)"
 
   # repo name
   repo-name = !basename `git rev-parse --show-toplevel`
+
+  # name of the origin master branch
+  master-name = !sh -c '~/dev/github/dotfiles/detect-master.sh'
 
   # c/o https://gist.github.com/robmiller/6018582
   # Get the current branch name (not so useful in itself, but used in
@@ -28,6 +34,8 @@
   unpublish = "!git push -d origin $(git branch-name)"
   # Interactively rebase all the commits on the current branch
   rebase-branch = "!git rebase -i `git merge-base master HEAD`"
+  # Delete local and remote branch
+  nuke = !sh -c 'git branch -D $1 && git push origin :$1' -
 
   # Find the commits that were introduced by a merge
   merge-log = "!git log `git merge-span .. $1`"
@@ -35,15 +43,38 @@
   merge-diff = "!git diff `git merge-span ... $1`"
   # As above, but in your difftool
   merge-difftool = "!git difftool `git merge-span ... $1`"
+  # Perform a squashed merge
+  merges = "!git merge --squash"
 
-  # Interactively rebase all the commits on the current branch
-  rebase-branch = "!git rebase -i `git merge-base master HEAD`"
+  # Pull and rebase
+  pullr = "!git pull --rebase origin $(git branch-name)"
+  pl = "!git pull origin $(git branch-name)"
+  # Pull and rebase and push
+  prp = "!git pullr && git push"
+
+  # Better logging
+  # https://thoughtbot.com/blog/dumpster-diving-through-dotfiles-better-git-logging
+  sl = log --oneline --decorate -20 --color=always
+  sla = log --oneline --decorate --graph --all --color=always -30
+  slap = log --oneline --decorate --graph --all --color=always
 
   # Unstage any files that have been added to the staging area
   unstage = reset HEAD
   # Show changes that have been staged
   diffc = diff --cached
+
+  ahead = "!git rev-list --left-right --count $(git master-name)...$(git branch-name) | awk '{ print $1 }'"
+  behind = "!git rev-list --left-right --count $(git master-name)...$(git branch-name) | awk '{ print $2 }'"
+
+  squash-branch = "!git rebase -i HEAD~$(git behind)"
+  sb = squash-branch
 [core]
   excludesfile = ~/.gitignore
 [commit]
   verbose = true
+[include]
+  path = ~/.gitconfig.local
+[pull]
+	rebase = true
+[pager]
+	branch = false

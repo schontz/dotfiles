@@ -19,6 +19,9 @@
     ~/.profile: 
     ~/.vimrc: 
     ~/.zshrc: 
+    ~/.config/git
+      create: true
+      path: config/git
     ~/.config/nvim:
       create: true
       path: config/nvim
