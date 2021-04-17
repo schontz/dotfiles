@@ -14,9 +14,6 @@ let g:coc_node_path = '~/.asdf/shims/node'
   endif
   call plug#begin('~/.config/nvim/plugged')
 
-  " Plug 'vim-airline/vim-airline'
-  " Plug 'vim-airline/vim-airline-themes'
-
   " lightline {{{
     Plug 'itchyny/lightline.vim'
     Plug 'mengelbrecht/lightline-bufferline'
