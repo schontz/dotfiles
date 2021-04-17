@@ -1,5 +1,5 @@
 # give us access to ^Q
-stty -ixon
+[[ -n ${TTY:-} &&$commands[stty] == 1 ]] && stty -ixon
 
 # vi mode
 bindkey -v

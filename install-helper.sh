@@ -24,7 +24,9 @@ if [ "$(uname)" == "Darwin" ]; then
     brew bundle
   fi
 
-  git clone https://github.com/pndurette/zsh-lux.git ~/.oh-my-zsh/custom/plugins/
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+  git clone --depth=1 https://github.com/pndurette/zsh-lux.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-lux
 else
   echo "Cloning asdf"
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0

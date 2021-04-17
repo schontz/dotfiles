@@ -3,6 +3,7 @@ set termguicolors
 
 let g:python2_host_prog = '~/.asdf/shims/python2'
 let g:python3_host_prog = '~/.asdf/shims/python3'
+let g:coc_node_path = '~/.asdf/shims/node'
 
 " VimPlug {{{
   " ensure vim-plug is installed and then load it
