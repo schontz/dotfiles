@@ -117,12 +117,12 @@ alias ohmyzsh="v ~/.oh-my-zsh"
 
 # From thoughtbot dotfiles
 # load custom executable functions
-for function in ~/.zsh/functions/*; do
+for function in ~/.config/zsh/functions/*; do
   source $function
 done
 
 # load custom configs
-for config in ~/.zsh/configs/*; do
+for config in ~/.config/zsh/configs/*; do
   source $config
 done
 
