@@ -36,6 +36,6 @@ if (debug_coc == 1)
 
   echo "COC debug mode"
 else
-  source /Users/dschontz/.vimrc
+  source ~/.vimrc
 endif
 
