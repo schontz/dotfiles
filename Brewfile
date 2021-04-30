@@ -1,4 +1,5 @@
 brew "asdf"
+brew "gpg"
 brew "fasd"
 brew "fzf"
 brew "jump"
