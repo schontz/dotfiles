@@ -4,6 +4,16 @@
 # Install ohmyzsh
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+if test ! "$( command -v brew )"; then
+  echo "Installing homebrew"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+  echo "Installing brew bundle"
+  brew bundle
+fi
+
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "\\n\\nRunning on macOS"
   
@@ -16,20 +26,7 @@ if [ "$(uname)" == "Darwin" ]; then
   # Remove shadow from window screenshots
   defaults write com.apple.screencapture disable-shadow -bool true
 
-  if test ! "$( command -v brew )"; then
-    echo "Installing homebrew"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  
-    echo "Installing brew bundle"
-    brew bundle
-  fi
-
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-
   git clone --depth=1 https://github.com/pndurette/zsh-lux.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-lux
-else
-  echo "Cloning asdf"
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
 fi
 
 # git
