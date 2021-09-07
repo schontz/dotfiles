@@ -21,12 +21,12 @@
   repo-name = !basename `git rev-parse --show-toplevel`
 
   # name of the origin master branch
-  master-name = !sh -c '~/dev/github/dotfiles/detect-master.sh'
+  master-name = !sh -c '~/.config/git/detect-master.sh'
 
   # c/o https://gist.github.com/robmiller/6018582
   # Get the current branch name (not so useful in itself, but used in
   # other aliases)
-  branch-name = "!git rev-parse --abbrev-ref HEAD"
+  branch-name = rev-parse --abbrev-ref HEAD
   # Push the current branch to the remote "origin", and set it to track
   # the upstream branch
   publish = "!git push -u origin $(git branch-name)"
@@ -44,7 +44,7 @@
   # As above, but in your difftool
   merge-difftool = "!git difftool `git merge-span ... $1`"
   # Perform a squashed merge
-  merges = "!git merge --squash"
+  merges = merge --squash
 
   # Pull and rebase
   pullr = "!git pull --rebase origin $(git branch-name)"
@@ -60,14 +60,16 @@
 
   # Unstage any files that have been added to the staging area
   unstage = reset HEAD
+  # Undo commit
+  undo = reset HEAD^
   # Show changes that have been staged
   diffc = diff --cached
 
-  ahead = "!git rev-list --left-right --count $(git master-name)...$(git branch-name) | awk '{ print $1 }'"
-  behind = "!git rev-list --left-right --count $(git master-name)...$(git branch-name) | awk '{ print $2 }'"
+  ahead = "!git rev-list --right-only --count $(git master-name)...$(git branch-name)"
+  behind = "!git rev-list --left-only --count $(git master-name)...$(git branch-name)"
 
-  squash-branch = "!git rebase -i HEAD~$(git behind)"
-  sb = squash-branch
+  # squash branch
+  sb = "!git rebase -i HEAD~$(git ahead)"
 [core]
   excludesfile = ~/.gitignore
 [commit]

@@ -67,6 +67,20 @@ let g:coc_node_path = '~/.asdf/shims/node'
   " Put your non-Plugin stuff after this line
 " }}}
 
+function! IsDarkMode()
+  if has("macunix")
+    let s = substitute(system('defaults read -g AppleInterfaceStyle 2>/dev/null'), '\n\+$', '', '')
+    if s == "Dark"
+      return 1
+    else
+      return 0
+    endif
+  else
+    return 1
+  endif
+endfunction
+
+
 " General {{{
   filetype plugin indent on
   syntax enable
@@ -85,8 +99,12 @@ let g:coc_node_path = '~/.asdf/shims/node'
   let mapleader = ","
 
   " Detect background color
-  if split($COLORFGBG, ';')[1] > 8
-    set background=light
+  if has("macunix")
+    if split($COLORFGBG, ';')[1] > 8
+      set background=light
+    else
+      set background=dark
+    endif
   else
     set background=dark
   endif
@@ -132,7 +150,7 @@ let g:coc_node_path = '~/.asdf/shims/node'
   " Open images via Finder/Preview
   autocmd BufEnter *.png,*.jpg,*gif silent exec "!open ".expand("%") | :bw
 
-  set wildignore+=*.pyc,*.o,*.obj,*.svn,*.swp,*.class,*.hg,*.DS_Store,*.min.*
+  set wildignore+=*.pyc,*.o,*.obj,*.svn,*.swp,*.class,*.hg,*.DS_Store
 
   set linebreak
 " }}}
@@ -273,7 +291,8 @@ let g:javascript_plugin_jsdoc = 1
   if &background ==# 'light'
     colorscheme solarized8
   else
-    colorscheme wombat256mod
+    " colorscheme wombat256mod
+    colorscheme dracula
   endif
 " }}}
 

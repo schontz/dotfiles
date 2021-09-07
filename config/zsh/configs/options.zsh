@@ -7,3 +7,4 @@ setopt extendedglob
 
 # Allow [ or ] whereever you want
 unsetopt nomatch
+unsetopt share_history
