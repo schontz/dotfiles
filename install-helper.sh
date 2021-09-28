@@ -9,10 +9,18 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf
 
 if test ! "$( command -v brew )"; then
-  # Unattended install
-  # https://github.com/Homebrew/legacy-homebrew/issues/46779#issuecomment-162819088
-  echo "Installing homebrew"
-  echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+  if [ "$(uname)" == "Darwin" ]; then
+    # Unattended install
+    # https://github.com/Homebrew/legacy-homebrew/issues/46779#issuecomment-162819088
+    echo "Installing homebrew"
+    echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+  else
+    echo "Installing linuxbrew"
+    git clone https://github.com/Homebrew/brew ~/.linuxbrew/Homebrew
+    mkdir ~/.linuxbrew/bin
+    ln -s ~/.linuxbrew/Homebrew/bin/brew ~/.linuxbrew/bin
+    eval "$(~/.linuxbrew/bin/brew shellenv)"
+  fi
 
   echo "Installing brew bundle"
   brew bundle
