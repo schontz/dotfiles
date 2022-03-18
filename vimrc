@@ -274,9 +274,150 @@ let g:javascript_plugin_jsdoc = 1
 
 " COC {{{
   if (match(&rtp, 'coc.nvim') > -1)
-    if filereadable($HOME . "/.config/nvim/cocrc.vim")
-      source ~/.config/nvim/cocrc.vim
-    endif
+    " Better display for messages
+    set cmdheight=1
+
+    " You will have bad experience for diagnostic messages when it's default 4000.
+    set updatetime=300
+
+    " don't give |ins-completion-menu| messages.
+    set shortmess+=c
+
+    " always show signcolumns
+    set signcolumn=yes
+
+    " Use tab for trigger completion with characters ahead and navigate.
+    " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+    " inoremap <silent><expr> <TAB>
+    "      \ pumvisible() ? "\<C-n>" :
+    "      \ <SID>check_back_space() ? "\<TAB>" :
+    "      \ coc#refresh()
+    " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    " Use <cr> to confirm completion
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+    " To make <cr> select the first completion item and confirm the completion when no item has been selected:
+    inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
+    " Close the preview window when completion is done.
+    autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Use <c-space> to trigger completion.
+    inoremap <silent><expr> <c-space> coc#refresh()
+
+    " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+    " Coc only does snippet and additional edit on confirm.
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    " Or use `complete_info` if your vim support it, like:
+    " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+    " Use `[g` and `]g` to navigate diagnostics
+    nmap <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+    " Remap keys for gotos
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+
+    " Use K to show documentation in preview window
+    nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+    function! s:show_documentation()
+      if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+      else
+        call CocAction('doHover')
+      endif
+    endfunction
+
+    " Highlight symbol under cursor on CursorHold
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+
+    " Remap for rename current word
+    nmap <leader>rn <Plug>(coc-rename)
+
+    " Remap for format selected region
+    xmap <leader>f  <Plug>(coc-format-selected)
+    nmap <leader>f  <Plug>(coc-format-selected)
+
+    augroup mygroup
+      autocmd!
+      " Setup formatexpr specified filetype(s).
+      autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+      " Update signature help on jump placeholder
+      autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    augroup end
+
+    " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+    xmap <leader>af <Plug>(coc-codeaction-selected)
+    nmap <leader>af <Plug>(coc-codeaction-selected)
+
+    " Remap for do codeAction of current line
+    nmap <leader>ac  <Plug>(coc-codeaction)
+    " Fix autofix problem of current line
+    nmap <leader>qf  <Plug>(coc-fix-current)
+
+    " Create mappings for function text object, requires document symbols feature of languageserver.
+    xmap if <Plug>(coc-funcobj-i)
+    xmap af <Plug>(coc-funcobj-a)
+    omap if <Plug>(coc-funcobj-i)
+    omap af <Plug>(coc-funcobj-a)
+
+    " Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
+    " nmap <silent> <C-d> <Plug>(coc-range-select)
+    " xmap <silent> <C-d> <Plug>(coc-range-select)
+
+    " Use `:Format` to format current buffer
+    command! -nargs=0 Format :call CocAction('format')
+
+    " Use `:Fold` to fold current buffer
+    " command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+    " use `:OR` for organize import of current buffer
+    command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+    " Add status line support, for integration with other plugin, checkout `:h coc-status`
+    " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+    " Using CocList
+    " Show all diagnostics
+    nnoremap <silent> <leader>dg  :<C-u>CocList diagnostics<cr>
+    " Manage extensions
+    nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+    " Show commands
+    nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+    " Find symbol of current document
+    nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+    " Search workspace symbols
+    nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+    " Do default action for next item.
+    nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+    " Do default action for previous item.
+    nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+    " Resume latest coc list
+    nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+    " Add :Prettier command
+    command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+    " Jest
+    " Run jest for current project
+    command! -nargs=0 Jest :call  CocAction('runCommand', 'jest.projectTest')
+
+    " Run jest for current file
+    command! -nargs=0 JestCurrent :call  CocAction('runCommand', 'jest.fileTest', ['%'])
+
+    " Run jest for current test
+    nnoremap <leader>te :call CocAction('runCommand', 'jest.singleTest')<CR>
     " Debug errors
     " let g:node_client_debug = 1
     let g:coc_fzf_preview = ''
@@ -298,20 +439,211 @@ let g:javascript_plugin_jsdoc = 1
 
 " Lightline {{{
   if (match(&rtp, 'lightline') > -1)
-    if filereadable($HOME . "/.config/nvim/statusline.vim")
-      source ~/.config/nvim/statusline.vim
-    else
-      let g:lightline = {
-            \ 'active': {
-            \   'left': [ [ 'mode', 'paste' ],
-            \             [ 'gitbranch', 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-            \ },
-            \ 'component_function': {
-            \   'coc_status': 'coc#status',
-            \   'gitbranch': 'FugitiveHead',
-            \ },
-            \ }
+    set noshowmode
+
+    let s:symbolE = '✘'
+    let s:symbolW = '⚠'
+    let s:symbolI = 'ℹ'
+    let s:symbolH = '💡'
+
+    let s:theme = 'solarized'
+    if &background ==# 'dark'
+      let s:theme = 'wombat'
     endif
+
+
+    let g:lightline = {
+    \ 'colorscheme': s:theme,
+    \ 'active': {
+    \   'left': [ [ 'platform' ], [ 'mode', 'paste' ],
+    \             [ 'git', 'readonly', 'filename', 'modified',
+    \               'coc_error', 'coc_warning', 'coc_hint', 'coc_info',
+    \               'langclient_error', 'langclient_warning', 'langclient_hint', 'langclient_info',
+    \               'linter_warnings', 'linter_errors' ],
+    \             ['coc_status', 'nvlsp_status'] ],
+    \ 'right': [ [ 'lineinfo' ],
+    \            [ 'fileformat', 'fileencoding', 'filetype' ] ]
+    \ },
+    \ 'tabline': {
+    \   'left': [ ['buffers'] ],
+    \   'right': [ ['close'] ]
+    \ },
+    \ 'component': {
+    \   'lineinfo': '%l:%v/%L',
+    \ },
+    \ 'component_function': {
+    \   'git': 'LightlineGit',
+    \   'readonly': 'LightlineReadonly',
+    \   'fileformat': 'LightlineFileformat',
+    \   'fileencoding': 'LightlineFileencoding',
+    \   'coc_status': 'LightlineCocStatus',
+    \   'linter_warnings': 'LightlineLinterWarnings',
+    \   'linter_errors': 'LightlineLinterErrors',
+    \   'platform': 'LightlinePlatform',
+    \ },
+    \ 'component_expand': {
+    \   'nvlsp_status': 'LightLineNeovimLspStatus',
+    \   'linter_warnings': 'LightlineLinterWarnings',
+    \   'linter_errors': 'LightlineLinterErrors',
+    \   'langclient_error'        : 'Lightlinelang_clientErrors',
+    \   'langclient_warning'      : 'Lightlinelang_clientWarnings',
+    \   'langclient_info'         : 'Lightlinelang_clientInfos',
+    \   'langclient_hint'         : 'Lightlinelang_clientHints',
+    \   'coc_error'        : 'LightlineCocErrors',
+    \   'coc_warning'      : 'LightlineCocWarnings',
+    \   'coc_info'         : 'LightlineCocInfos',
+    \   'coc_hint'         : 'LightlineCocHints',
+    \   'coc_fix'          : 'LightlineCocFixes',
+    \   'buffers': 'lightline#bufferline#buffers',
+    \ },
+    \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+    \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
+    \}
+
+    let g:lightline.component_type = {
+    \   'linter_errors'    : 'error',
+    \   'linter_warnings'  : 'warning',
+    \   'coc_error'        : 'error',
+    \   'coc_warning'      : 'warning',
+    \   'coc_info'         : 'tabsel',
+    \   'nvlsp_status'     : 'raw',
+    \   'coc_hint'         : 'middle',
+    \   'coc_fix'          : 'middle',
+    \   'buffers'          : 'tabsel',
+    \ }
+
+    set showtabline=2
+
+    function! s:lightline_coc_diagnostic(kind, sign) abort
+      let info = get(b:, 'coc_diagnostic_info', 0)
+      if empty(info) || get(info, a:kind, 0) == 0
+        return ''
+      endif
+      return printf('%s%d', a:sign, info[a:kind])
+    endfunction
+
+    function! LightlineCocErrors() abort
+      return s:lightline_coc_diagnostic('error', s:symbolE)
+    endfunction
+    function! LightlineCocWarnings() abort
+      return s:lightline_coc_diagnostic('warning', s:symbolW)
+    endfunction
+    function! LightlineCocInfos() abort
+      return s:lightline_coc_diagnostic('information', s:symbolI)
+    endfunction
+    function! LightlineCocHints() abort
+      return s:lightline_coc_diagnostic('hint',s:symbolH)
+    endfunction
+    function! LightlineCocStatus() abort
+      return get(g:, 'coc_status', '')
+    endfunction
+
+    function! LightlinePlatform()
+      return has('macunix') == '1' ? '' : has('win32') == '1' ? '' : ''
+    endfunction
+
+    function! LightlineFileformat()
+      return &fileformat !=# 'unix' ? &fileformat : ''
+    endfunction
+
+    function! LightlineFileencoding()
+      return &fileencoding !=# 'utf-8' ? &fileencoding : ''
+    endfunction
+
+    function! LightlineReadonly()
+      return &readonly && &filetype !=# 'help' ? '🔒' : ''
+    endfunction
+
+    function! LightlineGit()
+      let branch = FugitiveHead()
+      if branch ==# ''
+          return ''
+      endif
+      let [a,m,r] = GitGutterGetHunkSummary()
+      let s = ' '
+      if a != 0
+        let s = s . printf('+%d', a)
+      endif
+      if m != 0
+        let s = s . printf('~%d', m)
+      endif
+      if r != 0
+        let s = s . printf('-%d', r)
+      endif
+      " if s ==# ' '
+      "     return branch
+      " endif
+      return (' ' . branch[:10] . s)
+    endfunction
+
+    function! LightlineLinterWarnings() abort
+      let l:counts = ale#statusline#Count(bufnr(''))
+      let l:all_errors = l:counts.error + l:counts.style_error
+      let l:all_non_errors = l:counts.total - l:all_errors
+      return l:counts.total == 0 ? '' : printf('%d '.s:symbolW, all_non_errors)
+    endfunction
+
+    function! LightlineLinterErrors() abort
+      let l:counts = ale#statusline#Count(bufnr(''))
+      let l:all_errors = l:counts.error + l:counts.style_error
+      let l:all_non_errors = l:counts.total - l:all_errors
+      return l:counts.total == 0 ? '' : printf('%d '.s:symbolE, all_errors)
+    endfunction
+
+    function! LightlineLinterOK() abort
+      let l:counts = ale#statusline#Count(bufnr(''))
+      let l:all_errors = l:counts.error + l:counts.style_error
+      let l:all_non_errors = l:counts.total - l:all_errors
+      return l:counts.total == 0 ? '✓' : ''
+    endfunction
+
+
+    function! s:lightline_langclient_diagnostic(kind, sign) abort
+      let info = LanguageClient#statusLineDiagnosticsCounts()
+      if empty(info) || get(info, a:kind, 0) == 0
+        return ''
+      endif
+      return printf('%s%d', a:sign, info[a:kind])
+    endfunction
+
+    function! Lightlinelang_clientErrors() abort
+      return s:lightline_langclient_diagnostic('E', s:symbolE)
+    endfunction
+    function! Lightlinelang_clientWarnings() abort
+      return s:lightline_langclient_diagnostic('W', s:symbolW)
+    endfunction
+    function! Lightlinelang_clientInfos() abort
+      return s:lightline_langclient_diagnostic('I', s:symbolI)
+    endfunction
+    function! Lightlinelang_clientHints() abort
+      return s:lightline_langclient_diagnostic('H',s:symbolH)
+    endfunction
+
+    " Statusline
+    function! LightLineNeovimLspStatus() abort
+      if !exists(':LspInstallInfo')
+        return ''
+      endif
+      if luaeval('#vim.lsp.buf_get_clients() > 0')
+        return substitute(luaeval("require('lsp-status').status()"), '%', '%%', 'g') 
+      endif
+
+      return ''
+    endfunction
+
+    " echo nvim_treesitter#statusline(90)
+
+    let g:diagnostic_enable_virtual_text = 1
+    call sign_define("LspDiagnosticsErrorSign", {"text" : "E", "texthl" : "LspDiagnosticsError"})
+    call sign_define("LspDiagnosticsWarningSign", {"text" : "W", "texthl" : "LspDiagnosticsWarning"})
+    call sign_define("LspDiagnosticsInformationSign", {"text" : "I", "texthl" : "LspDiagnosticsInformation"})
+    call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
+    let g:diagnostic_virtual_text_prefix = '✘ '
+
+    autocmd User CocDiagnosticChange call lightline#update()
+
+    let g:lightline#bufferline#filename_modifier = ':s?\/index\.\(js\|jsx\|ts\|tsx\)$?.i?:t'
+    let g:lightline#bufferline#smart_path=0
   end
 " }}}
 
@@ -327,3 +659,24 @@ function! MakeSessionAndQuit()
   mksession! ~/.current_session.vim
   quit
 endfunction
+
+" MacVim
+if has('gui')
+  set guifont=HackNerdFontComplete-Regular:h22
+  if IsDarkMode()
+    set background=dark
+    colorscheme dracula
+  else
+    set background=light
+    colorscheme=solarized8
+  endif
+
+  set go+=!
+  set lines=50 columns=140
+  set wildmenu
+  set wildmode=longest,list,full
+
+  if empty(argv())
+    cd ~/Desktop
+  endif
+endif

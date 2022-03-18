@@ -14,7 +14,7 @@ endif
 let g:lightline = {
 \ 'colorscheme': s:theme,
 \ 'active': {
-\   'left': [ [ 'mode', 'paste' ],
+\   'left': [ [ 'platform' ], [ 'mode', 'paste' ],
 \             [ 'git', 'readonly', 'filename', 'modified',
 \               'coc_error', 'coc_warning', 'coc_hint', 'coc_info',
 \               'langclient_error', 'langclient_warning', 'langclient_hint', 'langclient_info',
@@ -38,6 +38,7 @@ let g:lightline = {
 \   'coc_status': 'LightlineCocStatus',
 \   'linter_warnings': 'LightlineLinterWarnings',
 \   'linter_errors': 'LightlineLinterErrors',
+\   'platform': 'LightlinePlatform',
 \ },
 \ 'component_expand': {
 \   'nvlsp_status': 'LightLineNeovimLspStatus',
@@ -94,6 +95,10 @@ function! LightlineCocHints() abort
 endfunction
 function! LightlineCocStatus() abort
   return get(g:, 'coc_status', '')
+endfunction
+
+function! LightlinePlatform()
+  return has('macunix') == '1' ? '' : has('win32') == '1' ? '' : ''
 endfunction
 
 function! LightlineFileformat()
