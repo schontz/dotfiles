@@ -2,11 +2,20 @@
 # Custom setup scripts
 
 # Install ohmyzsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+if [ ! -d "~/.oh-my-zsh" ]; then
+  echo "Installing oh-my-zsh"
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+if [ ! -d "~/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+  echo "Installing powerlevel10k"
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+fi
 
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf
+if [ ! -d "~/.asdf" ]; then
+  echo "Installing asdf"
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf
+fi
 
 if test ! "$( command -v brew )"; then
   if [ "$(uname)" == "Darwin" ]; then

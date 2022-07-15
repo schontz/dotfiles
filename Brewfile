@@ -1,4 +1,3 @@
-brew "gpg"
 brew "fasd"
 brew "fzf"
 brew "jump"
