@@ -68,6 +68,8 @@
   ahead = "!git rev-list --right-only --count $(git master-name)...$(git branch-name)"
   behind = "!git rev-list --left-only --count $(git master-name)...$(git branch-name)"
 
+  ahead-commit="!git rev-parse HEAD~$(git ahead)"
+
   # squash branch
   sb = "!git rebase -i HEAD~$(git ahead)"
 [core]

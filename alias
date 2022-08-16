@@ -27,6 +27,7 @@ alias gpl="git pl"
 alias gpr="git pull --rebase"
 alias gco="git co"
 alias gmsg="git log -1 --pretty=%B | pbcopy"
+alias gs="g switch -"
 
 # Misc
 alias dark="lux macos dark && export COLORFGBG=\"15;0\""

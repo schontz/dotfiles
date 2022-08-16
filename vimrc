@@ -49,6 +49,8 @@ let g:coc_node_path = '~/.asdf/shims/node'
   Plug 'airblade/vim-gitgutter'
   Plug 'moll/vim-bbye'
 
+  Plug 'christoomey/vim-tmux-navigator'
+
   " Load last
   Plug 'ryanoasis/vim-devicons'
   Plug 'vwxyutarooo/nerdtree-devicons-syntax'
@@ -112,10 +114,6 @@ endfunction
   " Scroll
   nnoremap <C-K> <C-Y>
   nnoremap <C-J> <C-E>
-
-  " Buffer switching
-  nnoremap <C-L> :bn<CR>
-  nnoremap <C-H> :bp<CR>
 
   " Quick movement between panes
   " nnoremap <C-J> <C-W><C-J>
@@ -211,6 +209,41 @@ endfunction
 
 " Fugitive
 let g:fugitive_dynamic_colors = 0
+
+" tmux-navigator {{{
+  " Disable tmux navigator when zooming the Vim pane
+  let g:tmux_navigator_disable_when_zoomed = 1
+
+  " Use custom mappings
+  let g:tmux_navigator_no_mappings = 1
+
+  function! NavLeft()
+    if tabpagewinnr(tabpagenr(), '$') == 1
+      execute ":bp"
+    else
+      execute ":TmuxNavigateLeft"
+    endif
+  endfunction
+
+  function! NavRight()
+    if tabpagewinnr(tabpagenr(), '$') == 1
+      execute ":bn"
+    else
+      execute ":TmuxNavigateRight"
+    endif
+  endfunction
+
+  nnoremap <silent> <C-h> :call NavLeft()<cr>
+  nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+  nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+  nnoremap <silent> <C-l> :call NavRight()<cr>
+  nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+
+  " Buffer switching
+  " nnoremap <C-l> :bn<CR>
+  " nnoremap <C-h> :bp<CR>
+" }}}
+
 
 " NERDTree {{{
   " function! NERDTreeToggleAndFind()
