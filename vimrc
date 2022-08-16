@@ -217,8 +217,24 @@ let g:fugitive_dynamic_colors = 0
   " Use custom mappings
   let g:tmux_navigator_no_mappings = 1
 
+  function! IsLeftmost()
+    if win_screenpos(win_getid())[1] == 1
+      return 1
+    else
+      return 0
+    endif
+  endfunction
+
+  function! IsRightmost()
+    if win_screenpos(win_getid())[1] >= winwidth(0)
+      return 1
+    else
+      return 0
+    endif
+  endfunction
+
   function! NavLeft()
-    if tabpagewinnr(tabpagenr(), '$') == 1
+    if tabpagewinnr(tabpagenr(), '$') == 1 || IsLeftmost() == 1
       execute ":bp"
     else
       execute ":TmuxNavigateLeft"
@@ -226,7 +242,7 @@ let g:fugitive_dynamic_colors = 0
   endfunction
 
   function! NavRight()
-    if tabpagewinnr(tabpagenr(), '$') == 1
+    if tabpagewinnr(tabpagenr(), '$') == 1 || IsRightmost() == 1
       execute ":bn"
     else
       execute ":TmuxNavigateRight"
