@@ -49,7 +49,7 @@ let g:coc_node_path = '~/.asdf/shims/node'
   Plug 'airblade/vim-gitgutter'
   Plug 'moll/vim-bbye'
 
-  Plug 'christoomey/vim-tmux-navigator'
+  Plug 'schontz/vim-tmux-navigator'
 
   " Load last
   Plug 'ryanoasis/vim-devicons'
@@ -210,56 +210,8 @@ endfunction
 " Fugitive
 let g:fugitive_dynamic_colors = 0
 
-" tmux-navigator {{{
-  " Disable tmux navigator when zooming the Vim pane
-  let g:tmux_navigator_disable_when_zoomed = 1
-
-  " Use custom mappings
-  let g:tmux_navigator_no_mappings = 1
-
-  function! IsLeftmost()
-    if win_screenpos(win_getid())[1] == 1
-      return 1
-    else
-      return 0
-    endif
-  endfunction
-
-  function! IsRightmost()
-    if win_screenpos(win_getid())[1] >= winwidth(0)
-      return 1
-    else
-      return 0
-    endif
-  endfunction
-
-  function! NavLeft()
-    if tabpagewinnr(tabpagenr(), '$') == 1 || IsLeftmost() == 1
-      execute ":bp"
-    else
-      execute ":TmuxNavigateLeft"
-    endif
-  endfunction
-
-  function! NavRight()
-    if tabpagewinnr(tabpagenr(), '$') == 1 || IsRightmost() == 1
-      execute ":bn"
-    else
-      execute ":TmuxNavigateRight"
-    endif
-  endfunction
-
-  nnoremap <silent> <C-h> :call NavLeft()<cr>
-  nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-  nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-  nnoremap <silent> <C-l> :call NavRight()<cr>
-  nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
-
-  " Buffer switching
-  " nnoremap <C-l> :bn<CR>
-  " nnoremap <C-h> :bp<CR>
-" }}}
-
+" Disable tmux navigator when zooming the Vim pane
+let g:tmux_navigator_disable_when_zoomed = 1
 
 " NERDTree {{{
   " function! NERDTreeToggleAndFind()
@@ -344,10 +296,15 @@ let g:javascript_plugin_jsdoc = 1
     " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
     " Use <cr> to confirm completion
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    " inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
     " To make <cr> select the first completion item and confirm the completion when no item has been selected:
-    inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+    " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice.
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+          \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     " Close the preview window when completion is done.
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -363,7 +320,7 @@ let g:javascript_plugin_jsdoc = 1
 
     " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
     " Coc only does snippet and additional edit on confirm.
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    " inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
     " Or use `complete_info` if your vim support it, like:
     " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
