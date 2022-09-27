@@ -1,5 +1,5 @@
 {
-  "workbench.iconTheme": "material-icon-theme",
+  "telemetry.telemetryLevel": "off",
   "editor.wordWrap": "on",
   "terminal.external.osxExec": "iTerm.app",
   "html.autoClosingTags": false,
@@ -26,6 +26,14 @@
     {
       "before": ["K"],
       "commands": ["editor.action.showHover"]
+    },
+    {
+      "before": ["]", "g"],
+      "commands": ["editor.action.marker.next"]
+    },
+    {
+      "before": ["[", "g"],
+      "commands": ["editor.action.marker.prev"]
     }
   ],
   "files.exclude": {
@@ -63,12 +71,11 @@
       "overviewRulerColor": "rgba(100,100,255,0.8)"
     }
   ],
-  "editor.fontSize": 17,
+  "editor.fontSize": 13,
   "auto-rename-tag.activationOnLanguage": ["html"],
   "editor.autoClosingBrackets": "never",
   "terminal.integrated.fontSize": 15,
   "editor.tabSize": 2,
-  "window.zoomLevel": 1,
   "terminal.integrated.rightClickBehavior": "copyPaste",
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -87,6 +94,22 @@
   "editor.fontFamily": "'_SF Mono', Menlo, Monaco, 'Courier New', monospace",
   "workbench.fontAliasing": "auto",
   "terminal.integrated.fontFamily": "Menlo",
-  "workbench.colorTheme": "Monokai",
-  "telemetry.enableTelemetry": false
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredDarkColorTheme": "Dracula",
+  "workbench.preferredLightColorTheme": "Solarized Light",
+  "workbench.colorTheme": "Dracula",
+  "emmet.showExpandedAbbreviation": "never",
+  "jest.autoRun": "off",
+  "window.zoomLevel": 2,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.typegen.ts",
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.tsx": "${capture}.ts, ${capture}.typegen.ts",
+    "tsconfig.json": "tsconfig.*.json",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml",
+    "*.mts": "${capture}.typegen.ts",
+    "*.cts": "${capture}.typegen.ts"
+  }
 }
