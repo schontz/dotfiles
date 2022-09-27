@@ -51,6 +51,8 @@ let g:coc_node_path = '~/.asdf/shims/node'
 
   Plug 'schontz/vim-tmux-navigator'
 
+  Plug 'wellle/context.vim'
+
   " Load last
   Plug 'ryanoasis/vim-devicons'
   Plug 'vwxyutarooo/nerdtree-devicons-syntax'
@@ -452,9 +454,9 @@ let g:javascript_plugin_jsdoc = 1
     let s:symbolI = 'ℹ'
     let s:symbolH = '💡'
 
-    let s:theme = 'solarized'
-    if &background ==# 'dark'
-      let s:theme = 'wombat'
+    let s:theme = 'wombat'
+    if &background ==# 'light'
+      let s:theme = 'solarized'
     endif
 
 
