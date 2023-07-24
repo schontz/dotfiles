@@ -28,7 +28,6 @@ let g:coc_node_path = '~/.asdf/shims/node'
     Plug 'dracula/vim', { 'name': 'dracula' }
     Plug 'vim-scripts/wombat256.vim'
     Plug 'lifepillar/vim-solarized8'
-    Plug 'tomasiser/vim-code-dark'
   " }}}
 
   " Syntax highlighting {{{
@@ -46,10 +45,16 @@ let g:coc_node_path = '~/.asdf/shims/node'
   " Plug 'Xuyuanp/nerdtree-git-plugin'
   " Plug 'scrooloose/nerdcommenter'
 
+  " NeoTree
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-tree/nvim-web-devicons'
+  Plug 'MunifTanjim/nui.nvim'
+  Plug 'nvim-neo-tree/neo-tree.nvim'
+
   Plug 'airblade/vim-gitgutter'
   Plug 'moll/vim-bbye'
 
-  Plug 'schontz/vim-tmux-navigator'
+  Plug 'christoomey/vim-tmux-navigator'
 
   Plug 'wellle/context.vim'
 
@@ -103,7 +108,7 @@ endfunction
   let mapleader = ","
 
   " Detect background color
-  if has("macunix")
+  if !empty($COLORFGBG)
     if split($COLORFGBG, ';')[1] > 8
       set background=light
     else
@@ -224,29 +229,69 @@ let g:tmux_navigator_disable_when_zoomed = 1
   "   endif
   " endfunction
 
-  map <C-n> :NERDTreeToggle<CR>
-  let NERDTreeRespectWildIgnore=1
-  let NERDTreeShowHidden=1
+  " map <C-n> :NERDTreeToggle<CR>
+  " let NERDTreeRespectWildIgnore=1
+  " let NERDTreeShowHidden=1
   " let NERDTreeQuitOnOpen=1
   " Close when the last open tab is NERDTree 
   " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-  let g:NERDTreeDirArrowExpandable = '▸'
-  let g:NERDTreeDirArrowCollapsible = '▾'
-  let NERDTreeIgnore = ['^node_modules$[[dir]]']
-  map <leader>nn :NERDTreeProjectLoadFromCWD<CR>
-  map <leader>nf :NERDTreeFind<CR>
+  " let g:NERDTreeDirArrowExpandable = '▸'
+  " let g:NERDTreeDirArrowCollapsible = '▾'
+  " let NERDTreeIgnore = ['^node_modules$[[dir]]']
+  " map <leader>nn :NERDTreeProjectLoadFromCWD<CR>
+  " map <leader>nf :NERDTreeFind<CR>
 
   " How can I make sure vim does not open files and other buffers on NerdTree window?
   " If more than one window and previous buffer was NERDTree, go back to it.
-  autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
+  " autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
 
   " Add spaces after comment delimiters by default
-  let g:NERDSpaceDelims = 1
+  " let g:NERDSpaceDelims = 1
 
   " Align line-wise comment delimiters flush left instead of following code indentation
-  let g:NERDDefaultAlign = 'left'
+  " let g:NERDDefaultAlign = 'left'
 
 " }}}
+
+" NeoTree {{{{
+  map <C-N> :NeoTreeFocusToggle<CR>
+  map <leader>nf :Neotree reveal<CR>
+
+lua <<LUA
+  require("neo-tree").setup({
+    enable_git_status = true,
+    sort_case_insensitive = false,
+    default_component_configs = {
+      modified = {
+        symbol = "[+]",
+        highlight = "NeoTreeModified",
+      },
+      name = {
+        trailing_slash = false,
+        use_git_status_colors = true,
+        highlight = "NeoTreeFileName",
+      },
+    },
+    window = {
+      mappings = {
+        ["o"] = "open"
+      }
+    },
+    filesystem = {
+      follow_current_file = false,
+      group_empty_dirs = true,
+      window = {
+      mappings = {
+        ["o"] = "open"
+      }
+      }
+    },
+    source_selector = {
+      statusline = true
+    }
+  })
+LUA
+" }}}}
 
 " Airline {{{
 if (match(&rtp, 'vim-airline') > -1)
@@ -426,6 +471,17 @@ let g:javascript_plugin_jsdoc = 1
 
     " Run jest for current test
     nnoremap <leader>te :call CocAction('runCommand', 'jest.singleTest')<CR>
+
+    " Vitest
+    " Run Vitest for current project
+command! -nargs=0 Vitest :call CocAction('runCommand', 'vitest.projectTest')
+
+" Run Vitest for current file
+command! -nargs=0 VitestCurrent :call  CocAction('runCommand', 'vitest.fileTest', ['%'])
+
+" Run Vitest for single (nearest) test
+nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
+
     " Debug errors
     " let g:node_client_debug = 1
     let g:coc_fzf_preview = ''

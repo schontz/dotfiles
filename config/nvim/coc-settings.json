@@ -6,9 +6,11 @@
   "suggest.minTriggerInputLength": 2,
   "suggest.snippetIndicator": "►",
   "suggest.maxCompleteItemCount": 12,
-  "coc.preferences.formatOnSaveFiletypes": ["html", "css", "scss", "javascript", "typescript", "javascriptreact", "typescriptreact"],
+  "coc.preferences.formatOnSave": true,
   "prettier.requireConfig": true,
   "typescript.suggest.completeFunctionCalls": false,
-  "javascript.suggest.completeFunctionCalls": false
+  "javascript.suggest.completeFunctionCalls": false,
+  "vitest.terminal.enableSplitRight": true,
+  "vitest.watch": true
 }
 
