@@ -1,9 +1,12 @@
 set nocompatible
 set termguicolors
 
-let g:python2_host_prog = '~/.asdf/shims/python2'
-let g:python3_host_prog = '~/.asdf/shims/python3'
-let g:coc_node_path = '~/.asdf/shims/node'
+if has('gui')
+  let g:coc_node_path = '~/.nvm/versions/node/v18.16.1/bin/node'
+endif
+
+" let g:python2_host_prog = '~/.asdf/shims/python2'
+" let g:python3_host_prog = '~/.runtimes/Python39/bin/python3'
 
 " VimPlug {{{
   " ensure vim-plug is installed and then load it
@@ -20,6 +23,14 @@ let g:coc_node_path = '~/.asdf/shims/node'
   " }}}
 
   " Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-commentary'
+
+  " Plug 'neovim/nvim-lspconfig'
+  " Plug 'pmizio/typescript-tools.nvim'
+  " Plug 'hrsh7th/nvim-cmp'
+  " Plug 'stevearc/conform.nvim'
+  " Plug 'nvim-lua/plenary.nvim'
+  " Plug 'neovim/nvim-lspconfig'
 
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': '-> fzf#install()' }
   Plug 'junegunn/fzf.vim'
@@ -41,22 +52,30 @@ let g:coc_node_path = '~/.asdf/shims/node'
   " Git goodness
   Plug 'tpope/vim-fugitive'
 
-  Plug 'scrooloose/nerdtree'
-  " Plug 'Xuyuanp/nerdtree-git-plugin'
-  " Plug 'scrooloose/nerdcommenter'
+  " Preview CSS colors
+  Plug 'chrisbra/Colorizer'
 
-  " NeoTree
-  Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-tree/nvim-web-devicons'
-  Plug 'MunifTanjim/nui.nvim'
-  Plug 'nvim-neo-tree/neo-tree.nvim'
+  if has("nvim")
+    " NeoTree
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-tree/nvim-web-devicons'
+    Plug 'MunifTanjim/nui.nvim'
+    Plug 'nvim-neo-tree/neo-tree.nvim'
+  else
+    " NerdTree
+    Plug 'scrooloose/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+    Plug 'scrooloose/nerdcommenter'
+  endif
 
   Plug 'airblade/vim-gitgutter'
   Plug 'moll/vim-bbye'
 
   Plug 'christoomey/vim-tmux-navigator'
 
-  Plug 'wellle/context.vim'
+  Plug 'farconics/victionary'
+
+  " Plug 'wellle/context.vim'
 
   " Load last
   Plug 'ryanoasis/vim-devicons'
@@ -131,6 +150,9 @@ endfunction
   " Stop highlighting
   nnoremap <leader>j :noh<CR><Left>
 
+  " Toggle word wrap
+  nnoremap <leader>ww :set wrap!<CR>
+
   " Silent (no bells/beeps)
   set vb t_vb= 
   set belloff=all
@@ -185,6 +207,17 @@ endfunction
     endif 
   endfunction
 
+  function! Browse()
+    :G browse %
+  endfunction
+
+  " TODO: How to get a:lineno to work?
+  " function! BrowseLine(lineno = line('.'))
+  "   :G browse-line % `a:lineno`
+  " endfunction
+
+  nnoremap <leader>gb :silent call Browse()<CR>
+
   " Ctrl+C copy
   vnoremap <C-c> "+y
 
@@ -196,7 +229,7 @@ endfunction
   " vnoremap < <gv
 
   " Pretty print JSON
-  map <leader>on :silent :%!python -m json.tool<CR>
+  map <leader>on :silent :%!python3 -m json.tool<CR>
 
   " Save
   map <C-S> :w<CR>
@@ -220,42 +253,46 @@ let g:fugitive_dynamic_colors = 0
 " Disable tmux navigator when zooming the Vim pane
 let g:tmux_navigator_disable_when_zoomed = 1
 
-" NERDTree {{{
-  " function! NERDTreeToggleAndFind()
-  "   if g:NERDTree.IsOpen()
-  "     :NERDTreeToggle<CR>
-  "   else
-  "     :NERDTreeFind<CR>
-  "   endif
-  " endfunction
+let g:colorizer_auto_filetype='less,css,html'
 
-  " map <C-n> :NERDTreeToggle<CR>
-  " let NERDTreeRespectWildIgnore=1
-  " let NERDTreeShowHidden=1
-  " let NERDTreeQuitOnOpen=1
-  " Close when the last open tab is NERDTree 
-  " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-  " let g:NERDTreeDirArrowExpandable = '▸'
-  " let g:NERDTreeDirArrowCollapsible = '▾'
-  " let NERDTreeIgnore = ['^node_modules$[[dir]]']
-  " map <leader>nn :NERDTreeProjectLoadFromCWD<CR>
-  " map <leader>nf :NERDTreeFind<CR>
-
-  " How can I make sure vim does not open files and other buffers on NerdTree window?
-  " If more than one window and previous buffer was NERDTree, go back to it.
-  " autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
-
-  " Add spaces after comment delimiters by default
-  " let g:NERDSpaceDelims = 1
-
-  " Align line-wise comment delimiters flush left instead of following code indentation
-  " let g:NERDDefaultAlign = 'left'
-
-" }}}
-
+if has('nvim')
 " NeoTree {{{{
-  map <C-N> :NeoTreeFocusToggle<CR>
+  map <C-N> :Neotree toggle<CR>
   map <leader>nf :Neotree reveal<CR>
+
+let use_lsp = 0
+if (use_lsp == 1)
+lua <<LUA
+      require('lspconfig').eslint.setup({
+        settings = {
+          packageManager = 'yarn'
+        },
+        ---@diagnostic disable-next-line: unused-local
+        on_attach = function(client, bufnr)
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "EslintFixAll",
+          })
+        end,
+      })
+LUA
+
+lua <<LUA
+      require("typescript-tools").setup({
+        on_attach =
+            function(client, _)
+              client.server_capabilities.documentFormattingProvider = false
+              client.server_capabilities.documentRangeFormattingProvider = false
+            end,
+        settings = {
+          jsx_close_tag = {
+            enable = true,
+            filetypes = { "javascriptreact", "typescriptreact" },
+          }
+        }
+      })
+LUA
+endif
 
 lua <<LUA
   require("neo-tree").setup({
@@ -278,7 +315,6 @@ lua <<LUA
       }
     },
     filesystem = {
-      follow_current_file = false,
       group_empty_dirs = true,
       window = {
       mappings = {
@@ -292,6 +328,40 @@ lua <<LUA
   })
 LUA
 " }}}}
+else
+" NERDTree {{{
+  function! NERDTreeToggleAndFind()
+    if g:NERDTree.IsOpen()
+      :NERDTreeToggle<CR>
+    else
+      :NERDTreeFind<CR>
+    endif
+  endfunction
+
+  map <C-n> :NERDTreeToggle<CR>
+  let NERDTreeRespectWildIgnore=1
+  let NERDTreeShowHidden=1
+  let NERDTreeQuitOnOpen=1
+  " Close when the last open tab is NERDTree 
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  let g:NERDTreeDirArrowExpandable = '▸'
+  let g:NERDTreeDirArrowCollapsible = '▾'
+  let NERDTreeIgnore = ['^node_modules$[[dir]]']
+  map <leader>nn :NERDTreeProjectLoadFromCWD<CR>
+  map <leader>nf :NERDTreeFind<CR>
+
+  " How can I make sure vim does not open files and other buffers on NerdTree window?
+  " If more than one window and previous buffer was NERDTree, go back to it.
+  autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
+
+  " Add spaces after comment delimiters by default
+  let g:NERDSpaceDelims = 1
+
+  " Align line-wise comment delimiters flush left instead of following code indentation
+  let g:NERDDefaultAlign = 'left'
+
+" }}}
+endif
 
 " Airline {{{
 if (match(&rtp, 'vim-airline') > -1)
@@ -316,12 +386,23 @@ let g:javascript_plugin_jsdoc = 1
   map <leader>p :Buffers<CR>
   map <C-F> :execute 'Rg ' . input('Rg/')<CR>
 
-  let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 } }
+  let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.6, 'yoffset': 1 } }
   let $FZF_DEFAULT_OPTS = '--layout=default --color=' . &background
 " }}}
 
 " COC {{{
   if (match(&rtp, 'coc.nvim') > -1)
+    " Install these extensions
+    let g:coc_global_extensions = [
+      \'coc-prettier',
+      \'coc-json',
+      \'coc-jest',
+      \'coc-cssmodules',
+      \'coc-tsserver',
+      \'coc-css',
+      \'@yaegassy/coc-vitest'
+    \]
+
     " Better display for messages
     set cmdheight=1
 
@@ -499,6 +580,17 @@ nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
     " colorscheme wombat256mod
     colorscheme dracula
   endif
+
+  function! ToggleDarkMode()
+    if &background ==# 'light'
+      set background=dark
+      colorscheme dracula
+    else
+      set background=light
+      colorscheme solarized8
+    endif
+  endfunction
+  nnoremap <leader>tt :call ToggleDarkMode()<CR><Left>
 " }}}
 
 " Lightline {{{
@@ -711,6 +803,11 @@ nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
   end
 " }}}
 
+" victionary {{{
+  let g:victionary#map_defaults = 0
+  nmap <leader>di <Plug>(victionary#define_under_cursor)
+" }}}
+
 " Manual syntax detection (vim-polyglot does most auto) {{{
   autocmd BufNewFile,BufRead tsconfig.json setlocal filetype=jsonc
 " }}}
@@ -726,14 +823,16 @@ endfunction
 
 " MacVim
 if has('gui')
-  set guifont=HackNerdFontComplete-Regular:h22
-  if IsDarkMode()
-    set background=dark
-    colorscheme dracula
-  else
-    set background=light
-    colorscheme=solarized8
-  endif
+  set guifont=Menlo-Regular:h19
+  set background=dark
+  colorscheme dracula
+  " if IsDarkMode()
+  "   set background=dark
+  "   colorscheme dracula
+  " else
+  "   set background=light
+  "   colorscheme solarized8
+  " endif
 
   set go+=!
   set lines=50 columns=140

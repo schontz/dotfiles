@@ -1,7 +1,7 @@
 alias ls="ls -G"
 alias l="ls"
-alias ll="ls -l"
-alias la="ls -la"
+alias ll="ls -lh"
+alias la="ls -lah"
 alias be="bundle exec "
 alias vim="nvim"
 alias vi="nvim"
@@ -30,8 +30,14 @@ alias gmsg="git log -1 --pretty=%B | pbcopy"
 alias gs="g switch -"
 
 # Misc
-alias dark="lux macos dark && export COLORFGBG=\"15;0\""
-alias lite="lux macos light && export COLORFGBG=\"11;15\""
+alias dlite="osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
+alias dark="echo use dlite"
+alias lite="echo use dlite"
+
+# Pretty print json
+alias pbjson="pbpaste | json_pp | pbcopy"
+
+alias ssh="ssh -E /dev/null"
 
 # Include custom aliases
 if [[ -f ~/.alias.local ]]; then

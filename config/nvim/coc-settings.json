@@ -10,6 +10,7 @@
   "prettier.requireConfig": true,
   "typescript.suggest.completeFunctionCalls": false,
   "javascript.suggest.completeFunctionCalls": false,
+  "tsserver.useLocalTsdk": true,
   "vitest.terminal.enableSplitRight": true,
   "vitest.watch": true
 }

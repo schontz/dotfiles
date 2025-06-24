@@ -72,6 +72,15 @@
 
   # squash branch
   sb = "!git rebase -i HEAD~$(git ahead)"
+
+  # recent
+  recent = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname)|%(authorname)|%(committerdate:relative)' --count=20 | sed 's/refs\\/heads\\///g' | column -ts '|'"
+
+  cb = "!git checkout -b"
+
+  who = "!git shortlog -nes"
+
+  head = "!git show --stat"
 [core]
   excludesfile = ~/.gitignore
 [commit]
