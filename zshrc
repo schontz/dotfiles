@@ -9,10 +9,14 @@ fi
 
 case `uname` in
   Darwin)
-    HOMEBREW=/opt/homebrew
+    if [[ $(uname -m) == 'arm64' ]]; then
+      export HOMEBREW=/opt/homebrew
+    else
+      export HOMEBREW=/usr/local
+    fi
   ;;
   Linux)
-    HOMEBREW=$HOME/.linuxbrew
+    export HOMEBREW=$HOME/.linuxbrew
   ;;
 esac
 

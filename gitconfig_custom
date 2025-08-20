@@ -21,7 +21,8 @@
   repo-name = !basename `git rev-parse --show-toplevel`
 
   # name of the origin master branch
-  master-name = !sh -c '~/.config/git/detect-master.sh'
+  # master-name = !sh -c '~/.config/git/detect-master.sh'
+  master-name = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'"
 
   # c/o https://gist.github.com/robmiller/6018582
   # Get the current branch name (not so useful in itself, but used in
@@ -32,6 +33,8 @@
   publish = "!git push -u origin $(git branch-name)"
   # Delete the remote version of the current branch
   unpublish = "!git push -d origin $(git branch-name)"
+  # Delete and push the branch
+  republish = "git unpublish && git publish"
   # Interactively rebase all the commits on the current branch
   rebase-branch = "!git rebase -i `git merge-base master HEAD`"
   # Delete local and remote branch

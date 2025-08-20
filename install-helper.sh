@@ -42,12 +42,22 @@ if [ "$(uname)" == "Darwin" ]; then
   # https://macos-defaults.com/
 
   # Sleep shortcut Cmd-Shift-Option-/
-  # defaults write -g NSUserKeyEquivalents -dict-add Sleep "@^$/"
+  defaults write -g NSUserKeyEquivalents -dict-add Sleep "@^$/"
 
   # Remove shadow from window screenshots
   defaults write com.apple.screencapture disable-shadow -bool true
 
-  git clone --depth=1 https://github.com/pndurette/zsh-lux.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-lux
+  # Show full URL in Safari (not working)
+  # defaults write com.apple.Safari "ShowFullURLInSmartSearchField" -bool "true"
+
+  # Finder path bar
+  defaults write com.apple.finder "ShowPathbar" -bool "true"
+
+  # Screenshots to Pictures
+  defaults write com.apple.screencapture "location" -string "~/Pictures"
+
+  # Vertical CPU meter icon
+  defaults write com.apple.ActivityMonitor "IconType" -int "5"
 fi
 
 # git
@@ -57,3 +67,6 @@ then
   cat "  path = ~/.gitconfig_custom" >> ~/.gitconfig
 fi
 
+# tmux plugins
+# prefix + I to install after updates
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || echo "Already exists"
