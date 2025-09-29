@@ -327,10 +327,16 @@ lua <<LUA
     filesystem = {
       group_empty_dirs = true,
       window = {
-      mappings = {
-        ["o"] = "open"
-      }
-      }
+        mappings = {
+          ["o"] = "open"
+        }
+      },
+      filtered_items = {
+        visible = false,
+        hide_dotfiles = false,
+        hide_gitignored = true,
+        never_show = { ".git", ".DS_Store" },
+      },
     },
     source_selector = {
       statusline = true

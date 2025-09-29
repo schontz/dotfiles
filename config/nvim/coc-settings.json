@@ -3,6 +3,7 @@
   "diagnostic.warningSign": "",
   "diagnostic.infoSign": "",
   "eslint.autoFixOnSave": true,
+  "eslint.validate": [],
   "suggest.noselect": false,
   "suggest.minTriggerInputLength": 2,
   "suggest.snippetIndicator": "►",

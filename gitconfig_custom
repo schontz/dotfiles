@@ -84,6 +84,12 @@
   who = "!git shortlog -nes"
 
   head = "!git show --stat"
+
+  ca = "!git commit --amend"
+  can = "!git commit --amend --no-edit"
+
+  # list staged files
+  staged = "!git diff --name-only --cached"
 [core]
   excludesfile = ~/.gitignore
 [commit]
