@@ -29,9 +29,6 @@
       glob: true
       path: config/nvim/*
       relink: true
-    ~/.vim/:
-      path: ~/.config/nvim/
-      relink: true
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]

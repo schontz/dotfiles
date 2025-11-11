@@ -21,7 +21,7 @@ case `uname` in
 esac
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/bin:$HOMEBREW/bin:$PATH
+export PATH=$HOME/bin:$HOMEBREW/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -158,11 +158,11 @@ eval "$(fasd --init auto)"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# asdf
-# . $(brew --prefix asdf)/asdf.sh
-
-export JAVA_HOME="$(/usr/libexec/java_home)"
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+case $TERM_PROGRAM in
+  vscode | kiro)
+    eval "$(mise activate zsh --shims)"
+    ;;
+  *)
+    eval "$(/Users/dschontz/.local/bin/mise activate zsh)"
+    ;;
+esac

@@ -1,12 +1,9 @@
 set nocompatible
 set termguicolors
 
-if has('gui')
-  let g:coc_node_path = '~/.nvm/versions/node/v18.16.1/bin/node'
-endif
-
-" let g:python2_host_prog = '~/.asdf/shims/python2'
-" let g:python3_host_prog = '~/.runtimes/Python39/bin/python3'
+" Expect mise versions
+let g:coc_node_path = '~/.local/share/mise/shims/node'
+let g:python3_host_prog = '~/.local/share/mise/shims/python3'
 
 " VimPlug {{{
   " ensure vim-plug is installed and then load it

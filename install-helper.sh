@@ -12,11 +12,6 @@ if [ ! -d "~/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 fi
 
-if [ ! -d "~/.asdf" ]; then
-  echo "Installing asdf"
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-fi
-
 if test ! "$( command -v brew )"; then
   if [ "$(uname)" == "Darwin" ]; then
     # Unattended install
