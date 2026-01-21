@@ -258,6 +258,9 @@ endfunction
 " Fugitive
 let g:fugitive_dynamic_colors = 0
 
+" GitHub extras
+nmap <leader>gh <Plug>(open-github)
+
 " Disable tmux navigator when zooming the Vim pane
 let g:tmux_navigator_disable_when_zoomed = 1
 
