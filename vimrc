@@ -2,8 +2,8 @@ set nocompatible
 set termguicolors
 
 " Expect mise versions
-let g:coc_node_path = '~/.local/share/mise/shims/node'
-let g:python3_host_prog = '~/.local/share/mise/shims/python3'
+" let g:coc_node_path = '~/.local/share/mise/shims/node'
+" let g:python3_host_prog = '~/.local/share/mise/shims/python3'
 
 " VimPlug {{{
   " ensure vim-plug is installed and then load it
@@ -58,6 +58,7 @@ let g:python3_host_prog = '~/.local/share/mise/shims/python3'
 
   " Git goodness
   Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-rhubarb'
 
   " Preview CSS colors
   Plug 'chrisbra/Colorizer'

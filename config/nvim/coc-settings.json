@@ -10,6 +10,15 @@
   "suggest.maxCompleteItemCount": 12,
   "coc.preferences.formatOnSave": true,
   "prettier.requireConfig": true,
+  "tsserver.maxTsServerMemory": 16384,
+  "languageserver": {
+    // "tsgo": {
+    //   "command": "tsgo",
+    //   "args": ["--lsp", "--stdio"],
+    //   "filetypes": ["typescript", "typescriptreact", "javascript", "javascriptreact"],
+    //   "rootPatterns": ["tsconfig.json", "jsconfig.json", ".git/"]
+    // }
+  },
   "typescript.suggest.completeFunctionCalls": false,
   "javascript.suggest.completeFunctionCalls": false,
   "tsserver.useLocalTsdk": true,
@@ -17,6 +26,14 @@
   "vitest.watch": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
+  },
+  "floatFactory.floatConfig": {
+    "border": true,
+    "rounded": true,
+  },
+  "hover.floatConfig": {
+    "border": true,
+    "rounded": true,
   }
 }
 
