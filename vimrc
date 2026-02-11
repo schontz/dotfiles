@@ -37,15 +37,10 @@ set termguicolors
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': '-> fzf#install()' }
   Plug 'junegunn/fzf.vim'
 
-  " themes {{{
-    Plug 'dracula/vim', { 'name': 'dracula' }
-    Plug 'vim-scripts/wombat256.vim'
-    Plug 'lifepillar/vim-solarized8'
-  " }}}
-
-  " Syntax highlighting {{{
-    Plug 'sheerun/vim-polyglot'
-  " }}}
+  " themes
+  Plug 'dracula/vim', { 'name': 'dracula' }
+  Plug 'vim-scripts/wombat256.vim'
+  Plug 'lifepillar/vim-solarized8'
 
   " Git goodness
   Plug 'tpope/vim-fugitive'
@@ -56,6 +51,9 @@ set termguicolors
   Plug 'chrisbra/Colorizer'
 
   if has("nvim")
+    " Syntax highlighting
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
     " NeoTree
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-tree/nvim-web-devicons'
@@ -66,9 +64,16 @@ set termguicolors
     Plug 'neovim/nvim-lspconfig'
     Plug 'ojroques/nvim-lspfuzzy'
 
+    " Completion
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+
     " Formatter
     Plug 'sbdchd/neoformat'
   else
+    " Syntax highlighting
+    Plug 'sheerun/vim-polyglot'
+
     " COC completion and extension
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'antoinemadec/coc-fzf'
@@ -589,6 +594,95 @@ set signcolumn=yes
   endif
 " }}}
 
+" nvim-treesitter {{{
+if has("nvim")
+lua << EOF
+local status_ok, treesitter = pcall(require, 'nvim-treesitter.configs')
+if not status_ok then
+  return
+end
+
+treesitter.setup {
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  auto_install = true,
+
+  -- List of parsers to install (or "all")
+  ensure_installed = {
+    "javascript",
+    "typescript",
+    "tsx",
+    "json",
+    "html",
+    "css",
+    "lua",
+    "vim",
+    "vimdoc",
+    "bash",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "go",
+    "rust",
+    "yaml",
+  },
+
+  highlight = {
+    enable = true,
+    -- Disable vim-polyglot/syntax for files that treesitter handles
+    additional_vim_regex_highlighting = false,
+  },
+
+  indent = {
+    enable = true,
+  },
+
+  -- Incremental selection
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+}
+EOF
+endif
+" }}}
+
+" nvim-cmp {{{
+if has("nvim")
+lua << EOF
+-- Setup nvim-cmp
+local cmp = require('cmp')
+
+cmp.setup({
+  completion = {
+    completeopt = 'menu,menuone,noselect'
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+  }),
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+})
+EOF
+endif
+" }}}
+
 " nvim-lspconfig {{{
 if has("nvim")
 lua << EOF
@@ -610,6 +704,10 @@ vim.diagnostic.config({
 -- Customize completion popup appearance
 vim.opt.pumblend = 10  -- Transparency (0-100, 0=opaque, 100=transparent)
 vim.opt.pumheight = 15 -- Maximum number of items to show (default: 0 = all)
+
+-- Setup LSP capabilities with nvim-cmp
+local cmp_nvim_lsp = require('cmp_nvim_lsp')
+local lsp_capabilities = cmp_nvim_lsp.default_capabilities()
 
 -- Enable TypeScript via the Language Server Protocol (LSP)
 vim.lsp.enable('ts_ls')
@@ -727,6 +825,7 @@ end, {})
 -- Enable and configure TypeScript LSP
 vim.lsp.enable('ts_ls')
 vim.lsp.config('ts_ls', {
+  capabilities = lsp_capabilities,
   on_attach = lsp_keybindings_setup,
   init_options = {
     maxTsServerMemory = 12288, -- 12GB in megabytes
@@ -734,37 +833,7 @@ vim.lsp.config('ts_ls', {
 })
 EOF
 
-" LSP Completion settings
-" Configure completion options
-set completeopt=menu,menuone,noselect
-
 set updatetime=300
-
-" Auto-trigger completion while typing
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-function! s:try_complete() abort
-  silent! call feedkeys("\<C-x>\<C-o>", "n")
-endfunction
-
-augroup lsp_completion
-  autocmd!
-  " Trigger completion automatically while typing (only if omnifunc is set)
-  autocmd TextChangedI * if !pumvisible() && !s:check_back_space() && &omnifunc != '' | call s:try_complete() | endif
-augroup END
-
-" LSP Completion mappings
-" Use <c-space> to trigger completion manually
-inoremap <silent><expr> <c-space> pumvisible() ? "\<C-n>" : "\<C-x>\<C-o>"
-
-" Use <CR> to confirm completion (selects first item if none selected)
-inoremap <silent><expr> <CR> pumvisible() ? (complete_info()['selected'] != -1 ? "\<C-y>" : "\<C-n>\<C-y>") : "\<C-g>u\<CR>"
-
-" Close the preview window when completion is done
-autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 endif
 " }}}
