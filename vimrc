@@ -27,18 +27,13 @@ set termguicolors
   " lightline {{{
     Plug 'itchyny/lightline.vim'
     Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'josa42/nvim-lightline-lsp'
   " }}}
 
   " Plug 'tpope/vim-surround'
   Plug 'tpope/vim-commentary'
 
-  " Plug 'neovim/nvim-lspconfig'
-  " Plug 'pmizio/typescript-tools.nvim'
-  " Plug 'hrsh7th/nvim-cmp'
-  " Plug 'stevearc/conform.nvim'
-  " Plug 'nvim-lua/plenary.nvim'
-  " Plug 'neovim/nvim-lspconfig'
-
+  " fzf
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': '-> fzf#install()' }
   Plug 'junegunn/fzf.vim'
 
@@ -52,13 +47,10 @@ set termguicolors
     Plug 'sheerun/vim-polyglot'
   " }}}
 
-  " COC completion and extension
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'antoinemadec/coc-fzf'
-
   " Git goodness
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rhubarb'
+  Plug '~/dev/github/github-extras.vim'
 
   " Preview CSS colors
   Plug 'chrisbra/Colorizer'
@@ -69,7 +61,18 @@ set termguicolors
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'MunifTanjim/nui.nvim'
     Plug 'nvim-neo-tree/neo-tree.nvim'
+
+    " LSP
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'ojroques/nvim-lspfuzzy'
+
+    " Formatter
+    Plug 'sbdchd/neoformat'
   else
+    " COC completion and extension
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'antoinemadec/coc-fzf'
+
     " NerdTree
     Plug 'scrooloose/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -205,7 +208,15 @@ endfunction
   endif
 
   " VS Code
-  nnoremap <leader>co :silent execute '!code . %'<CR>
+  function! OpenInVSCode()
+    let workspace = glob('*.code-workspace')
+    if workspace != ''
+      execute '!code ' . shellescape(workspace) . ' ' . shellescape(expand('%'))
+    else
+      execute '!code ' . shellescape(expand('%'))
+    endif
+  endfunction
+  nnoremap <leader>co :silent call OpenInVSCode()<CR>
 
   " CD to directory of current buffer (only for that buffer)
   nnoremap <leader>cd :silent call CDHere()<CR>:pwd<CR>
@@ -273,39 +284,37 @@ if has('nvim')
 
 let use_lsp = 0
 if (use_lsp == 1)
-lua <<LUA
-      require('lspconfig').eslint.setup({
-        settings = {
-          packageManager = 'yarn'
-        },
-        ---@diagnostic disable-next-line: unused-local
-        on_attach = function(client, bufnr)
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            command = "EslintFixAll",
-          })
-        end,
+lua <<EOF
+  require('lspconfig').eslint.setup({
+    settings = {
+      packageManager = 'yarn'
+    },
+    ---@diagnostic disable-next-line: unused-local
+    on_attach = function(client, bufnr)
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        command = "EslintFixAll",
       })
-LUA
+    end,
+  })
 
-lua <<LUA
-      require("typescript-tools").setup({
-        on_attach =
-            function(client, _)
-              client.server_capabilities.documentFormattingProvider = false
-              client.server_capabilities.documentRangeFormattingProvider = false
-            end,
-        settings = {
-          jsx_close_tag = {
-            enable = true,
-            filetypes = { "javascriptreact", "typescriptreact" },
-          }
-        }
-      })
-LUA
+  require("typescript-tools").setup({
+    on_attach =
+        function(client, _)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+    settings = {
+      jsx_close_tag = {
+        enable = true,
+        filetypes = { "javascriptreact", "typescriptreact" },
+      }
+    }
+  })
+EOF
 endif
 
-lua <<LUA
+lua <<EOF
   require("neo-tree").setup({
     enable_git_status = true,
     sort_case_insensitive = false,
@@ -343,7 +352,7 @@ lua <<LUA
       statusline = true
     }
   })
-LUA
+EOF
 " }}}}
 else
 " NERDTree {{{
@@ -389,14 +398,11 @@ if (match(&rtp, 'vim-airline') > -1)
   let g:airline#extensions#tabline#left_sep = ' '
   let g:airline#extensions#tabline#left_alt_sep = '|'
 endif
-" if (match(&rtp, 'vim-airline-themes') > -1)
-"   let g:airline_theme='base16_default'
-" else
-"   let g:airline_theme='dracula'
-" endif
-" }}}
 
 let g:javascript_plugin_jsdoc = 1
+
+" always show signcolumns
+set signcolumn=yes
 
 " FZF {{{
   map <C-P> :Files<CR>
@@ -428,9 +434,6 @@ let g:javascript_plugin_jsdoc = 1
 
     " don't give |ins-completion-menu| messages.
     set shortmess+=c
-
-    " always show signcolumns
-    set signcolumn=yes
 
     " Use tab for trigger completion with characters ahead and navigate.
     " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
@@ -572,18 +575,198 @@ let g:javascript_plugin_jsdoc = 1
 
     " Vitest
     " Run Vitest for current project
-command! -nargs=0 Vitest :call CocAction('runCommand', 'vitest.projectTest')
+    command! -nargs=0 Vitest :call CocAction('runCommand', 'vitest.projectTest')
 
-" Run Vitest for current file
-command! -nargs=0 VitestCurrent :call  CocAction('runCommand', 'vitest.fileTest', ['%'])
+    " Run Vitest for current file
+    command! -nargs=0 VitestCurrent :call  CocAction('runCommand', 'vitest.fileTest', ['%'])
 
-" Run Vitest for single (nearest) test
-nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
+    " Run Vitest for single (nearest) test
+    nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
 
     " Debug errors
     " let g:node_client_debug = 1
     let g:coc_fzf_preview = ''
   endif
+" }}}
+
+" nvim-lspconfig {{{
+if has("nvim")
+lua << EOF
+-- Configure LSP floating windows with rounded borders
+local border_style = "rounded"
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover, { border = border_style }
+)
+
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+  vim.lsp.handlers.signature_help, { border = border_style }
+)
+
+vim.diagnostic.config({
+  float = { border = border_style }
+})
+
+-- Customize completion popup appearance
+vim.opt.pumblend = 10  -- Transparency (0-100, 0=opaque, 100=transparent)
+vim.opt.pumheight = 15 -- Maximum number of items to show (default: 0 = all)
+
+-- Enable TypeScript via the Language Server Protocol (LSP)
+vim.lsp.enable('ts_ls')
+
+-- LSP Keybindings (define first so we can use it in configs)
+local lsp_keybindings_setup = function(client, bufnr)
+  local opts = { noremap = true, silent = true, buffer = bufnr }
+
+  -- Function to check if a floating dialog exists and if not
+  -- then check for diagnostics under the cursor
+  function OpenDiagnosticIfNoFloat()
+    for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+      if vim.api.nvim_win_get_config(winid).zindex then
+        return
+      end
+    end
+    -- THIS IS FOR BUILTIN LSP
+    vim.diagnostic.open_float(0, {
+      scope = "cursor",
+      focusable = false,
+      close_events = {
+        "CursorMoved",
+        "CursorMovedI",
+        "BufHidden",
+        "InsertCharPre",
+        "WinLeave",
+      },
+    })
+  end
+  -- Show diagnostics under the cursor when holding position
+  vim.api.nvim_create_augroup("lsp_diagnostics_hold", { clear = true })
+  vim.api.nvim_create_autocmd({ "CursorHold" }, {
+    pattern = "*",
+    command = "lua OpenDiagnosticIfNoFloat()",
+    group = "lsp_diagnostics_hold",
+  })
+
+  -- Diagnostic navigation ([g and ]g)
+  vim.keymap.set('n', '[g', vim.diagnostic.goto_prev, opts)
+  vim.keymap.set('n', ']g', vim.diagnostic.goto_next, opts)
+
+  -- Go-to mappings
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, opts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+
+  -- Hover documentation (K)
+  vim.keymap.set('n', 'K', function()
+    vim.lsp.buf.hover { border = "rounded", max_height = 25, max_width = 120 }
+  end, opts)
+
+  -- Rename (<leader>rn)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+
+  -- Format selected region (<leader>f)
+  vim.keymap.set('x', '<leader>f', function() vim.lsp.buf.format { async = true } end, opts)
+  vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, opts)
+
+  -- Code actions
+  vim.keymap.set('x', '<leader>af', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', '<leader>af', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', '<leader>qf', vim.lsp.buf.code_action, opts)
+
+  -- Highlight symbol under cursor on CursorHold
+  if client.server_capabilities.documentHighlightProvider then
+    vim.api.nvim_create_augroup('lsp_document_highlight', { clear = false })
+    vim.api.nvim_clear_autocmds({ buffer = bufnr, group = 'lsp_document_highlight' })
+    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+      group = 'lsp_document_highlight',
+      buffer = bufnr,
+      callback = vim.lsp.buf.document_highlight,
+    })
+    vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+      group = 'lsp_document_highlight',
+      buffer = bufnr,
+      callback = vim.lsp.buf.clear_references,
+    })
+  end
+
+  -- Set omnifunc to use LSP completion
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+end
+
+-- Make the on_attach function globally available
+_G.lsp_keybindings_setup = lsp_keybindings_setup
+
+-- Setup nvim-lspfuzzy (fuzzy finder for LSP functions)
+require('lspfuzzy').setup {}
+
+vim.api.nvim_create_autocmd('LspAttach', {
+ callback = function(args)
+   local client = vim.lsp.get_client_by_id(args.data.client_id)
+   if not client then
+     return
+   else
+     client.request = require('lspfuzzy').wrap_request(client.request)
+   end
+ end
+})
+
+-- Commands (replaces :Format and :OR)
+vim.api.nvim_create_user_command('Format', function()
+  vim.lsp.buf.format()
+end, {})
+
+vim.api.nvim_create_user_command('OR', function()
+  vim.lsp.buf.code_action({
+    context = { only = { 'source.organizeImports' } },
+    apply = true,
+  })
+end, {})
+
+-- Enable and configure TypeScript LSP
+vim.lsp.enable('ts_ls')
+vim.lsp.config('ts_ls', {
+  on_attach = lsp_keybindings_setup,
+  init_options = {
+    maxTsServerMemory = 12288, -- 12GB in megabytes
+  },
+})
+EOF
+
+" LSP Completion settings
+" Configure completion options
+set completeopt=menu,menuone,noselect
+
+set updatetime=300
+
+" Auto-trigger completion while typing
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+function! s:try_complete() abort
+  silent! call feedkeys("\<C-x>\<C-o>", "n")
+endfunction
+
+augroup lsp_completion
+  autocmd!
+  " Trigger completion automatically while typing (only if omnifunc is set)
+  autocmd TextChangedI * if !pumvisible() && !s:check_back_space() && &omnifunc != '' | call s:try_complete() | endif
+augroup END
+
+" LSP Completion mappings
+" Use <c-space> to trigger completion manually
+inoremap <silent><expr> <c-space> pumvisible() ? "\<C-n>" : "\<C-x>\<C-o>"
+
+" Use <CR> to confirm completion (selects first item if none selected)
+inoremap <silent><expr> <CR> pumvisible() ? (complete_info()['selected'] != -1 ? "\<C-y>" : "\<C-n>\<C-y>") : "\<C-g>u\<CR>"
+
+" Close the preview window when completion is done
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+endif
 " }}}
 
 " Theme and colors {{{
@@ -631,11 +814,13 @@ nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
     \   'left': [ [ 'platform' ], [ 'mode', 'paste' ],
     \             [ 'git', 'readonly', 'filename', 'modified',
     \               'coc_error', 'coc_warning', 'coc_hint', 'coc_info',
+    \               'lsp_info', 'lsp_hints', 'lsp_errors', 'lsp_warnings',
     \               'langclient_error', 'langclient_warning', 'langclient_hint', 'langclient_info',
     \               'linter_warnings', 'linter_errors' ],
     \             ['coc_status', 'nvlsp_status'] ],
     \ 'right': [ [ 'lineinfo' ],
-    \            [ 'fileformat', 'fileencoding', 'filetype' ] ]
+    \            ['lsp_status'],
+    \            [ 'fileformat', 'fileencoding', 'filetype' ], ],
     \ },
     \ 'tabline': {
     \   'left': [ ['buffers'] ],
@@ -804,8 +989,6 @@ nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
       return ''
     endfunction
 
-    " echo nvim_treesitter#statusline(90)
-
     let g:diagnostic_enable_virtual_text = 1
     call sign_define("LspDiagnosticsErrorSign", {"text" : "E", "texthl" : "LspDiagnosticsError"})
     call sign_define("LspDiagnosticsWarningSign", {"text" : "W", "texthl" : "LspDiagnosticsWarning"})
@@ -814,6 +997,10 @@ nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
     let g:diagnostic_virtual_text_prefix = '✘ '
 
     autocmd User CocDiagnosticChange call lightline#update()
+
+    if has("nvim")
+      call lightline#lsp#register()
+    endif
 
     let g:lightline#bufferline#filename_modifier = ':s?\/index\.\(js\|jsx\|ts\|tsx\)$?.i?:t'
     let g:lightline#bufferline#smart_path=0
@@ -829,6 +1016,21 @@ nnoremap <leader>ve :call CocAction('runCommand', 'vitest.singleTest')<CR>
   autocmd BufNewFile,BufRead tsconfig.json setlocal filetype=jsonc
 " }}}
 
+" neoformat {{{
+if (match(&rtp, 'neoformat') > -1)
+  let g:neoformat_only_msg_on_error = 1
+  let g:neoformat_try_node_exe = 1
+
+  augroup fmt
+    autocmd!
+    autocmd BufWritePre * | Neoformat
+  augroup END
+
+  " Alias as :Prettier command
+  command! -nargs=0 Prettier :Neoformat
+endif
+" }}}
+
 " https://github.com/HerringtonDarkholme/yats.vim#config
 set re=0
 
@@ -840,16 +1042,9 @@ endfunction
 
 " MacVim
 if has('gui')
-  set guifont=Menlo-Regular:h19
+  set guifont=Menlo-Regular:h20
   set background=dark
   colorscheme dracula
-  " if IsDarkMode()
-  "   set background=dark
-  "   colorscheme dracula
-  " else
-  "   set background=light
-  "   colorscheme solarized8
-  " endif
 
   set go+=!
   set lines=50 columns=140
