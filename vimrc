@@ -65,8 +65,7 @@ set termguicolors
     Plug 'ojroques/nvim-lspfuzzy'
 
     " Completion
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'saghen/blink.cmp', { 'tag': 'v1.*' }
 
     " Formatter
     Plug 'sbdchd/neoformat'
@@ -654,35 +653,6 @@ EOF
 endif
 " }}}
 
-" nvim-cmp {{{
-if has("nvim")
-lua << EOF
--- Setup nvim-cmp
-local cmp = require('cmp')
-
-cmp.setup({
-  completion = {
-    completeopt = 'menu,menuone,noselect'
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-  }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-  }),
-  window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
-  },
-})
-EOF
-endif
-" }}}
-
 " nvim-lspconfig {{{
 if has("nvim")
 lua << EOF
@@ -704,10 +674,6 @@ vim.diagnostic.config({
 -- Customize completion popup appearance
 vim.opt.pumblend = 10  -- Transparency (0-100, 0=opaque, 100=transparent)
 vim.opt.pumheight = 15 -- Maximum number of items to show (default: 0 = all)
-
--- Setup LSP capabilities with nvim-cmp
-local cmp_nvim_lsp = require('cmp_nvim_lsp')
-local lsp_capabilities = cmp_nvim_lsp.default_capabilities()
 
 -- Enable TypeScript via the Language Server Protocol (LSP)
 vim.lsp.enable('ts_ls')
@@ -835,6 +801,65 @@ EOF
 
 set updatetime=300
 
+endif
+" }}}
+
+" blink.cmp {{{
+if has("nvim")
+lua << EOF
+require('blink.cmp').setup({
+  fuzzy = {
+    implementation = "prefer_rust"
+  },
+
+  keymap = {
+    preset = 'default',
+    ['<C-N>'] = { 'select_next', 'fallback' },
+    ['<C-P>'] = { 'select_prev', 'fallback' },
+    ['<CR>'] = { 'accept', 'fallback' },
+    ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+    ['<C-e>'] = { 'hide' },
+    ['<C-y>'] = { 'select_and_accept' },
+  },
+
+  appearance = {
+    use_nvim_cmp_as_default = true,
+    nerd_font_variant = 'mono'
+  },
+
+  sources = {
+    default = { 'lsp', 'path', 'snippets', 'buffer' },
+  },
+
+  completion = {
+    -- accept = {
+    --   auto_brackets = {
+    --     enabled = true,
+    --   },
+    -- },
+    menu = {
+      auto_show = true,
+      draw = {
+        treesitter = { 'lsp' }
+      }
+    },
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 500,
+      window = {
+        border = 'rounded',
+      },
+    },
+  },
+
+  signature = {
+    enabled = true,
+    window = {
+      border = 'rounded',
+    }
+  },
+})
+EOF
 endif
 " }}}
 
