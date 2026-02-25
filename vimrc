@@ -32,10 +32,12 @@ set termguicolors
 
   " Plug 'tpope/vim-surround'
   Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-unimpaired'
 
   " fzf
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': '-> fzf#install()' }
   Plug 'junegunn/fzf.vim'
+  Plug 'jesseleite/vim-agriculture'
 
   " themes
   Plug 'dracula/vim', { 'name': 'dracula' }
@@ -53,6 +55,7 @@ set termguicolors
   if has("nvim")
     " Syntax highlighting
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter-context'
 
     " NeoTree
     Plug 'nvim-lua/plenary.nvim'
@@ -66,6 +69,8 @@ set termguicolors
 
     " Completion
     Plug 'saghen/blink.cmp', { 'tag': 'v1.*' }
+
+    Plug 'folke/snacks.nvim'
 
     " Formatter
     Plug 'sbdchd/neoformat'
@@ -411,7 +416,9 @@ set signcolumn=yes
 " FZF {{{
   map <C-P> :Files<CR>
   map <leader>p :Buffers<CR>
-  map <C-F> :execute 'Rg ' . input('Rg/')<CR>
+  let g:agriculture#rg_options = "--hidden"
+  nmap <C-F> :execute 'RgRaw ' . input('RgRaw/')<CR>
+  nmap <C-S-F> :execute 'Lines ' . input('Lines/')<CR>
 
   let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.6, 'yoffset': 1 } }
   let $FZF_DEFAULT_OPTS = '--layout=default --color=' . &background
@@ -668,7 +675,16 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
 )
 
 vim.diagnostic.config({
-  float = { border = border_style }
+  float = { border = border_style },
+  signs = {
+    priority = 15,
+    text = {
+      [vim.diagnostic.severity.ERROR] = "❗",
+      [vim.diagnostic.severity.WARN]  = "⚠️",
+      [vim.diagnostic.severity.INFO]  = "ℹ",
+      [vim.diagnostic.severity.HINT]  = "☼",
+    },
+  },
 })
 
 -- Customize completion popup appearance
@@ -727,7 +743,13 @@ local lsp_keybindings_setup = function(client, bufnr)
   end, opts)
 
   -- Rename (<leader>rn)
-  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', '<leader>rn', function()
+    vim.ui.input({ prompt = 'Rename: ', default = vim.fn.expand('<cword>') }, function(new_name)
+      if new_name and new_name ~= '' then
+        vim.lsp.buf.rename(new_name)
+      end
+    end)
+  end, opts)
 
   -- Format selected region (<leader>f)
   vim.keymap.set('x', '<leader>f', function() vim.lsp.buf.format { async = true } end, opts)
@@ -737,7 +759,19 @@ local lsp_keybindings_setup = function(client, bufnr)
   vim.keymap.set('x', '<leader>af', vim.lsp.buf.code_action, opts)
   vim.keymap.set('n', '<leader>af', vim.lsp.buf.code_action, opts)
   vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, opts)
-  vim.keymap.set('n', '<leader>qf', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', '<leader>qf', function()
+    local picked = false
+    vim.lsp.buf.code_action({
+      apply = true,
+      filter = function()
+        if not picked then
+          picked = true
+          return true
+        end
+        return false
+      end,
+    })
+  end, opts)
 
   -- Highlight symbol under cursor on CursorHold
   if client.server_capabilities.documentHighlightProvider then
@@ -832,11 +866,11 @@ require('blink.cmp').setup({
   },
 
   completion = {
-    -- accept = {
-    --   auto_brackets = {
-    --     enabled = true,
-    --   },
-    -- },
+    accept = {
+      auto_brackets = {
+        enabled = false,
+      },
+    },
     menu = {
       auto_show = true,
       draw = {
@@ -857,6 +891,33 @@ require('blink.cmp').setup({
     window = {
       border = 'rounded',
     }
+  },
+})
+EOF
+endif
+" }}}
+
+" snacks.nvim {{{
+if has("nvim")
+lua << EOF
+require('snacks').setup({
+  picker = { enabled = true },
+  explorer = { enabled = true },
+  input = {
+    enabled = true,
+    win = {
+      relative = "cursor",
+      row = -3,
+      col = 0,
+      keys = {
+        i_esc = { "<esc>", "cancel", mode = "i" },
+        i_c_a = { "<C-a>", function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Home>",  true, false, true), "n", false) end, mode = "i" },
+        i_c_e = { "<C-e>", function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<End>",   true, false, true), "n", false) end, mode = "i" },
+        i_c_b = { "<C-b>", function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Left>",  true, false, true), "n", false) end, mode = "i" },
+        i_c_f = { "<C-f>", function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Right>", true, false, true), "n", false) end, mode = "i" },
+        i_c_d = { "<C-d>", function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Del>",   true, false, true), "n", false) end, mode = "i" },
+      },
+    },
   },
 })
 EOF
@@ -1129,7 +1190,10 @@ endif
 set re=0
 
 function! MakeSessionAndQuit()
-  NERDTreeClose
+  if has('nvim')
+  else
+    NERDTreeClose
+  endif
   mksession! ~/.current_session.vim
   quit
 endfunction
