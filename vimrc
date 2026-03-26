@@ -55,7 +55,7 @@ set termguicolors
   if has("nvim")
     " Syntax highlighting
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    Plug 'nvim-treesitter/nvim-treesitter-context'
+    " Plug 'nvim-treesitter/nvim-treesitter-context'
 
     " NeoTree
     Plug 'nvim-lua/plenary.nvim'
@@ -248,6 +248,8 @@ endfunction
 
   " Ctrl+C copy
   vnoremap <C-c> "+y
+  " Copy relative path of current file
+  map <C-S-c> :let @+ = expand("%")<CR>: echo "Copied to clipboard: " . expand("%")<CR>
 
   " Make Y behave like C and D
   nnoremap Y y$
@@ -263,6 +265,8 @@ endfunction
   map <C-S> :w<CR>
   " Save all
   command! W wall
+  " Save all silently
+  cnoreabbrev wa silent wa
   " Save and quit all
   if has('nvim')
     command! X wqa
@@ -273,6 +277,8 @@ endfunction
 
   " Zoom function
   nmap <leader>z <Plug>Zoom
+
+  nmap <leader>hi :silent syntax sync fromstart<CR>
 " }}}
 
 " Fugitive
@@ -280,6 +286,7 @@ let g:fugitive_dynamic_colors = 0
 
 " GitHub extras
 nmap <leader>gh <Plug>(open-github)
+nmap <leader>gs <Plug>(open-github-code-search)
 
 " Disable tmux navigator when zooming the Vim pane
 let g:tmux_navigator_disable_when_zoomed = 1
@@ -1189,14 +1196,9 @@ endif
 " https://github.com/HerringtonDarkholme/yats.vim#config
 set re=0
 
-function! MakeSessionAndQuit()
-  if has('nvim')
-  else
-    NERDTreeClose
-  endif
-  mksession! ~/.current_session.vim
-  quit
-endfunction
+" Sessions
+nmap <silent> <leader>ls <Plug>SessionLoad<CR>
+autocmd User SessionSavePre Neotree close
 
 " MacVim
 if has('gui')

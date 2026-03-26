@@ -13,11 +13,13 @@ let g:loaded_open_github = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-" Define the command
+" Define the commands
 command! -nargs=0 OpenGithub call opengithub#Open()
+command! -nargs=? OpenGithubCodeSearch call opengithub#Search(<q-args>)
 
-" Create <Plug> mapping for user-defined mappings
+" Create <Plug> mappings for user-defined mappings
 nnoremap <silent> <Plug>(open-github) :call opengithub#Open()<CR>
+nnoremap <silent> <Plug>(open-github-code-search) :call opengithub#Search('')<CR>
 
 " Restore cpoptions
 let &cpo = s:save_cpo

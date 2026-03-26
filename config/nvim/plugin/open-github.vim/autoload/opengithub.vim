@@ -204,6 +204,52 @@ function! s:ExtractGitHubRepo(url) abort
   return l:repo
 endfunction
 
+" Search GitHub for a term in the current repo
+" Optional argument: search type (default: code)
+" Valid types: code, issues, pullrequests, commits, repositories, wikis, topics, discussions
+function! opengithub#Search(type) abort
+  let l:repo = opengithub#GetGitHubRepo()
+
+  if empty(l:repo)
+    echohl WarningMsg
+    echo 'Not a Github repo'
+    echohl None
+    return
+  endif
+
+  let l:type = empty(a:type) ? 'code' : a:type
+
+  let l:term = input('GitHub search (' . l:type . '): ', expand('<cword>'))
+  if empty(l:term)
+    return
+  endif
+
+  " Encode repo as "repo:user/repo" then URL-encode it, plus the search term
+  let l:q = 'repo:' . l:repo . ' ' . l:term
+  let l:encoded_q = s:URLEncode(l:q)
+
+  let l:url = 'https://github.com/search?q=' . l:encoded_q . '&type=' . l:type
+
+  call opengithub#OpenURL(l:url)
+  echo 'Opening: ' . l:url
+endfunction
+
+" URL-encode a string (percent-encode special characters)
+function! s:URLEncode(str) abort
+  let l:result = ''
+  let l:i = 0
+  while l:i < len(a:str)
+    let l:char = a:str[l:i]
+    if l:char =~# '[A-Za-z0-9_.~-]'
+      let l:result .= l:char
+    else
+      let l:result .= printf('%%%02X', char2nr(l:char))
+    endif
+    let l:i += 1
+  endwhile
+  return l:result
+endfunction
+
 " Open URL in system default browser
 function! opengithub#OpenURL(url) abort
   let l:url = shellescape(a:url)

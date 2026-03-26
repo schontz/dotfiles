@@ -1,11 +1,12 @@
 # open-github.vim
 
-A Vim plugin that opens GitHub pull requests, issues, and commits directly from references under your cursor.
+A Vim plugin that opens GitHub pull requests, issues, commits, and code searches directly from Vim.
 
 ## Features
 
 - Open PRs/issues with a single keystroke
 - Open commits from commit hashes
+- Search the current repo on GitHub (code, issues, commits, and more)
 - Supports `#123` and `GH-123` notation for PRs/issues
 - Supports commit hashes (8-40 hex characters)
 - Automatically detects GitHub repository from `.git/config`
@@ -47,22 +48,41 @@ git clone https://github.com/yourusername/open-github.vim.git
 Add a key mapping to your `.vimrc` or `init.vim`:
 
 ```vim
-nmap <leader>gh <Plug>(open-github)  " Open PR/issue/commit
+nmap <leader>gh <Plug>(open-github)         " Open PR/issue/commit
+nmap <leader>gs <Plug>(open-github-code-search)  " Search repo on GitHub
 ```
 
 Or for Neovim with `init.lua`:
 
 ```lua
 vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
+vim.keymap.set('n', '<leader>gs', '<Plug>(open-github-code-search)', { silent = true })
 ```
 
 ## Usage
+
+### Opening PRs, issues, and commits
 
 1. Place your cursor on a PR/issue reference (e.g., `#123` or `GH-456`) or commit hash (e.g., `abc12345`)
 2. Press your mapped key (e.g., `<leader>gh`) or run `:OpenGithub`
 3. The PR/issue/commit will open in your default browser
 
 The plugin intelligently detects whether you're referencing a PR/issue or a commit and opens the appropriate GitHub page.
+
+### Searching the repo on GitHub
+
+Run `:OpenGithubCodeSearch [type]` or press your mapped key (e.g., `<leader>gs`). You'll be prompted for a search term. The optional `type` argument controls the search scope (default: `code`).
+
+Valid types: `code`, `issues`, `pullrequests`, `commits`, `repositories`, `wikis`, `topics`, `discussions`
+
+Examples:
+```
+:OpenGithubCodeSearch           → prompts for term, searches code
+:OpenGithubCodeSearch issues    → prompts for term, searches issues
+:OpenGithubCodeSearch commits   → prompts for term, searches commits
+```
+
+Opens: `https://github.com/search?q=repo%3Aorg%2Frepo%20<term>&type=<type>`
 
 ### Supported Patterns
 
@@ -102,12 +122,14 @@ Suggested mapping:
 
 ```vim
 " Vim/Neovim (vimscript)
-nmap <leader>gh <Plug>(open-github)  " Open GitHub PR/issue/commit
+nmap <leader>gh <Plug>(open-github)              " Open GitHub PR/issue/commit
+nmap <leader>gs <Plug>(open-github-code-search)  " Search repo on GitHub
 ```
 
 ```lua
 -- Neovim (Lua)
 vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
+vim.keymap.set('n', '<leader>gs', '<Plug>(open-github-code-search)', { silent = true })
 ```
 
 ## How It Works
@@ -132,6 +154,7 @@ vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
 | Command | Description |
 |---------|-------------|
 | `:OpenGithub` | Open the GitHub PR/issue/commit under cursor |
+| `:OpenGithubCodeSearch [type]` | Prompt for a search term and open GitHub search for the current repo. Optional `type` argument (default: `code`) |
 
 ## Mappings
 
@@ -139,7 +162,8 @@ The plugin does not set any default mappings. You must add mappings yourself (se
 
 | Mapping | Mode | Description |
 |---------|------|-------------|
-| `<Plug>(open-github)` | Normal | Plug mapping for opening PRs/issues/commits |
+| `<Plug>(open-github)` | Normal | Open PR/issue/commit under cursor |
+| `<Plug>(open-github-code-search)` | Normal | Prompt and open GitHub code search for the current repo |
 
 ## Troubleshooting
 
