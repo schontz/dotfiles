@@ -119,23 +119,21 @@ endfunction
 function! s:FindGitRoot() abort
   let l:dir = expand('%:p:h')
 
-  " If no file is open, use current working directory
-  if empty(l:dir)
+  " If no file is open or path is relative, use current working directory
+  if empty(l:dir) || l:dir !~# '^/'
     let l:dir = getcwd()
   endif
 
   " Walk up directory tree looking for .git
-  while l:dir !=# '/' && l:dir !=# ''
+  " Track previous dir to break out if fnamemodify stops reducing (e.g. '.')
+  let l:prev = ''
+  while l:dir !=# l:prev
     if isdirectory(l:dir . '/.git')
       return l:dir
     endif
+    let l:prev = l:dir
     let l:dir = fnamemodify(l:dir, ':h')
   endwhile
-
-  " Also check current working directory
-  if isdirectory(getcwd() . '/.git')
-    return getcwd()
-  endif
 
   return ''
 endfunction

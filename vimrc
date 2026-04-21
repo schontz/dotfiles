@@ -249,7 +249,7 @@ endfunction
   " Ctrl+C copy
   vnoremap <C-c> "+y
   " Copy relative path of current file
-  map <C-S-c> :let @+ = expand("%")<CR>: echo "Copied to clipboard: " . expand("%")<CR>
+  map <C-S-c> :let @+ = expand("%:.")<CR>: echo "Copied to clipboard: " . expand("%")<CR>
 
   " Make Y behave like C and D
   nnoremap Y y$
