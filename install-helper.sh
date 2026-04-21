@@ -1,23 +1,25 @@
 #!/bin/bash
 # Custom setup scripts
 
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Install ohmyzsh
-if [ ! -d "~/.oh-my-zsh" ]; then
+if [ ! -d ~/.oh-my-zsh ]; then
   echo "Installing oh-my-zsh"
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-if [ ! -d "~/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+if [ ! -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]; then
   echo "Installing powerlevel10k"
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 fi
 
-if test ! "$( command -v brew )"; then
+if test ! "$(command -v brew)"; then
   if [ "$(uname)" == "Darwin" ]; then
     # Unattended install
     # https://github.com/Homebrew/legacy-homebrew/issues/46779#issuecomment-162819088
     echo "Installing homebrew"
-    echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+    echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   else
     echo "Installing linuxbrew"
     git clone https://github.com/Homebrew/brew ~/.linuxbrew/Homebrew
@@ -32,7 +34,7 @@ fi
 
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "\\n\\nRunning on macOS"
-  
+
   # Customize MacOS Defaults
   # https://macos-defaults.com/
 
@@ -55,11 +57,14 @@ if [ "$(uname)" == "Darwin" ]; then
   defaults write com.apple.ActivityMonitor "IconType" -int "5"
 fi
 
-# git
-if [ `cat ~/.gitconfig | grep gitconfig_custom | wc -l` -eq 0]
-then
-  cat "[include]"                    >> ~/.gitconfig
-  cat "  path = ~/.gitconfig_custom" >> ~/.gitconfig
+# git: add include for gitconfig_custom if not already present
+if [ ! -f ~/.gitconfig ] || [ "$(grep -c gitconfig_custom ~/.gitconfig)" -eq 0 ]; then
+  printf "[include]\n  path = ~/.gitconfig_custom\n" >>~/.gitconfig
+fi
+
+# zsh: source dotfiles zshrc if not already present
+if [ ! -f ~/.zshrc ] || [ "$(grep -c "$DOTFILES_DIR/zshrc" ~/.zshrc)" -eq 0 ]; then
+  printf "\nsource %s/zshrc\n" "$DOTFILES_DIR" >>~/.zshrc
 fi
 
 # tmux plugins
