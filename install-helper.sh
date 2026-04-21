@@ -24,14 +24,14 @@ if test ! "$(command -v brew)"; then
     echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     echo "Installing brew bundle"
     brew bundle
-  else
-    # echo "Installing linuxbrew"
-    # git clone https://github.com/Homebrew/brew ~/.linuxbrew/Homebrew
-    # mkdir ~/.linuxbrew/bin
-    # ln -s ~/.linuxbrew/Homebrew/bin/brew ~/.linuxbrew/bin
-    # eval "$(~/.linuxbrew/bin/brew shellenv)"
-    # echo "Installing brew bundle"
-    # brew bundle
+  # else
+  #   echo "Installing linuxbrew"
+  #   git clone https://github.com/Homebrew/brew ~/.linuxbrew/Homebrew
+  #   mkdir ~/.linuxbrew/bin
+  #   ln -s ~/.linuxbrew/Homebrew/bin/brew ~/.linuxbrew/bin
+  #   eval "$(~/.linuxbrew/bin/brew shellenv)"
+  #   echo "Installing brew bundle"
+  #   brew bundle
   fi
 fi
 

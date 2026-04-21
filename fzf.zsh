@@ -10,7 +10,13 @@ fi
 
 # Key bindings
 # ------------
-source "$HOMEBREW/opt/fzf/shell/key-bindings.zsh"
+_fzf_key_bindings="$HOMEBREW/opt/fzf/shell/key-bindings.zsh"
+[[ ! -f "$_fzf_key_bindings" ]] && _fzf_key_bindings="/usr/share/doc/fzf/examples/key-bindings.zsh"
+if [[ ! -f "$_fzf_key_bindings" ]] && command -v mise &>/dev/null; then
+  _fzf_key_bindings="$(mise where fzf 2>/dev/null)/shell/key-bindings.zsh"
+fi
+[[ -f "$_fzf_key_bindings" ]] && source "$_fzf_key_bindings"
+unset _fzf_key_bindings
 
 # Use ripgrep
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!**/.git/**'"
