@@ -9,11 +9,13 @@ if [ ! -d ~/.oh-my-zsh ]; then
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
+# Install p10k
 if [ ! -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]; then
   echo "Installing powerlevel10k"
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 fi
 
+# Install homebrew
 if test ! "$(command -v brew)"; then
   if [ "$(uname)" == "Darwin" ]; then
     # Unattended install
@@ -33,8 +35,15 @@ if test ! "$(command -v brew)"; then
   fi
 fi
 
+# Install fasd
+FASD_TMP=$(mktemp -d)
+git clone https://github.com/clvv/fasd "$FASD_TMP"
+PREFIX=$HOME make -C "$FASD_TMP" install
+rm -rf "$FASD_TMP"
+
+# Customize macOS
 if [ "$(uname)" == "Darwin" ]; then
-  echo -e "\\n\\nRunning on macOS"
+  echo -e "\\n\\nCustomizing macOS"
 
   # Customize MacOS Defaults
   # https://macos-defaults.com/
@@ -58,9 +67,9 @@ if [ "$(uname)" == "Darwin" ]; then
   defaults write com.apple.ActivityMonitor "IconType" -int "5"
 fi
 
-# git: add include for gitconfig_custom if not already present
-if [ ! -f ~/.gitconfig ] || [ "$(grep -c gitconfig_custom ~/.gitconfig)" -eq 0 ]; then
-  printf "[include]\n  path = ~/.gitconfig_custom\n" >>~/.gitconfig
+# git: add include for gitconfig.conf
+if [ ! -f ~/.gitconfig ] || [ "$(grep -c "$DOTFILES_DIR/gitconfig.conf" ~/.gitconfig)" -eq 0 ]; then
+  printf "\n[include]\n  path = %s/gitconfig.conf\n" "$DOTFILES_DIR" >>~/.gitconfig
 fi
 
 # zsh: source dotfiles zshrc if not already present
