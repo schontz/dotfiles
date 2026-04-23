@@ -698,8 +698,10 @@ vim.diagnostic.config({
 vim.opt.pumblend = 10  -- Transparency (0-100, 0=opaque, 100=transparent)
 vim.opt.pumheight = 15 -- Maximum number of items to show (default: 0 = all)
 
--- Enable TypeScript via the Language Server Protocol (LSP)
-vim.lsp.enable('ts_ls')
+-- TypeScript LSP: 'tsgo' (Go-based, faster) or 'ts_ls' (Node-based)
+local ts_lsp = 'tsgo'
+
+vim.lsp.enable(ts_lsp)
 
 -- LSP Keybindings (define first so we can use it in configs)
 local lsp_keybindings_setup = function(client, bufnr)
@@ -829,13 +831,12 @@ vim.api.nvim_create_user_command('OR', function()
   })
 end, {})
 
--- Enable and configure TypeScript LSP
-vim.lsp.enable('ts_ls')
-vim.lsp.config('ts_ls', {
+-- TypeScript LSP config
+vim.lsp.config(ts_lsp, {
   capabilities = lsp_capabilities,
   on_attach = lsp_keybindings_setup,
   init_options = {
-    maxTsServerMemory = 12288, -- 12GB in megabytes
+    maxTsServerMemory = 12288,
   },
 })
 EOF
