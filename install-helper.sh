@@ -6,7 +6,7 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Install ohmyzsh
 if [ ! -d ~/.oh-my-zsh ]; then
   echo "Installing oh-my-zsh"
-  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --noreplace-rc
 fi
 
 # Install p10k
