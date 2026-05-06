@@ -48,6 +48,7 @@ set termguicolors
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rhubarb'
   Plug '~/dev/github/github-extras.vim'
+  Plug 'rhysd/conflict-marker.vim'
 
   " Preview CSS colors
   Plug 'chrisbra/Colorizer'
@@ -283,6 +284,13 @@ endfunction
 
 " Fugitive
 let g:fugitive_dynamic_colors = 0
+" Cheat sheet:
+" d2o = obtain from left (HEAD)
+" d3o = obtain from right
+" ]x [x = navigate conflicts
+" ct = get their (HEAD)
+" co = get ours
+" cb = get both
 
 " GitHub extras
 nmap <leader>gh <Plug>(open-github)
@@ -298,21 +306,35 @@ if has('nvim')
   map <C-N> :Neotree toggle<CR>
   map <leader>nf :Neotree reveal<CR>
 
-let use_lsp = 0
-if (use_lsp == 1)
 lua <<EOF
-  require('lspconfig').eslint.setup({
-    settings = {
-      packageManager = 'yarn'
-    },
-    ---@diagnostic disable-next-line: unused-local
+  vim.lsp.enable("eslint")
+  vim.lsp.config("eslint", {
     on_attach = function(client, bufnr)
       vim.api.nvim_create_autocmd("BufWritePre", {
         buffer = bufnr,
-        command = "EslintFixAll",
+        callback = function()
+          pcall(vim.cmd, 'LspEslintFixAll')
+        end,
       })
     end,
   })
+EOF
+
+let use_lsp = 0
+if (use_lsp == 1)
+lua <<EOF
+---  require('lspconfig').eslint.setup({
+---    settings = {
+---      packageManager = 'pnpm'
+---    },
+---    ---@diagnostic disable-next-line: unused-local
+---    on_attach = function(client, bufnr)
+---      vim.api.nvim_create_autocmd("BufWritePre", {
+---        buffer = bufnr,
+---        command = "EslintFixAll",
+---      })
+---    end,
+---  })
 
   require("typescript-tools").setup({
     on_attach =
@@ -672,14 +694,6 @@ if has("nvim")
 lua << EOF
 -- Configure LSP floating windows with rounded borders
 local border_style = "rounded"
-
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover, { border = border_style }
-)
-
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-  vim.lsp.handlers.signature_help, { border = border_style }
-)
 
 vim.diagnostic.config({
   float = { border = border_style },
