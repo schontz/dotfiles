@@ -1048,6 +1048,9 @@ endif
     \ }
 
     set showtabline=2
+    if has('nvim')
+      set laststatus=3
+    endif
 
     function! s:lightline_coc_diagnostic(kind, sign) abort
       let info = get(b:, 'coc_diagnostic_info', 0)
