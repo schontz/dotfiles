@@ -1,0 +1,33 @@
+# Show what is listening on a port, then kill it after confirming
+# usage: portkill 3000
+portkill() {
+  if [[ $# -eq 0 ]]; then
+    echo "usage: portkill <port>" >&2
+    return 1
+  fi
+
+  local pids=($(lsof -nP -iTCP:"$1" -sTCP:LISTEN -t))
+  if [[ ${#pids} -eq 0 ]]; then
+    echo "nothing listening on port $1"
+    return 1
+  fi
+
+  port "$1"
+
+  local confirm
+  read "confirm?kill ${#pids} process(es) on port $1? [y/N] "
+  if [[ $confirm != [yY]* ]]; then
+    echo "aborted"
+    return 1
+  fi
+
+  kill "${pids[@]}" 2>/dev/null
+
+  # give them a moment to exit before escalating
+  sleep 0.5
+  local alive=($(lsof -nP -iTCP:"$1" -sTCP:LISTEN -t))
+  if [[ ${#alive} -gt 0 ]]; then
+    echo "still listening, sending SIGKILL"
+    kill -9 "${alive[@]}" 2>/dev/null
+  fi
+}

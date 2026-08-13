@@ -1,0 +1,17 @@
+# Show what process is listening on a port
+# usage: port 3000
+port() {
+  if [[ $# -eq 0 ]]; then
+    echo "usage: port <port>" >&2
+    return 1
+  fi
+
+  local out
+  out="$(lsof -nP -iTCP:"$1" -sTCP:LISTEN)"
+  if [[ -z $out ]]; then
+    echo "nothing listening on port $1"
+    return 1
+  fi
+
+  echo "$out"
+}
