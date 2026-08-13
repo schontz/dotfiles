@@ -295,6 +295,7 @@ let g:fugitive_dynamic_colors = 0
 " GitHub extras
 nmap <leader>gh <Plug>(open-github)
 nmap <leader>gs <Plug>(open-github-code-search)
+nmap <leader>gc <Plug>(open-github-changes)
 
 " Disable tmux navigator when zooming the Vim pane
 let g:tmux_navigator_disable_when_zoomed = 1
@@ -662,6 +663,7 @@ treesitter.setup {
     "go",
     "rust",
     "yaml",
+    "log",
   },
 
   highlight = {
@@ -1194,6 +1196,7 @@ endif
 
 " Manual syntax detection (vim-polyglot does most auto) {{{
   autocmd BufNewFile,BufRead tsconfig.json setlocal filetype=jsonc
+  autocmd BufNewFile,BufRead *.log,*.log.* setlocal filetype=log
 " }}}
 
 " neoformat {{{

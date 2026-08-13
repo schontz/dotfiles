@@ -15,10 +15,12 @@ set cpo&vim
 
 " Define the commands
 command! -nargs=0 OpenGithub call opengithub#Open()
+command! -nargs=0 OpenGithubChanges call opengithub#OpenChanges()
 command! -nargs=? OpenGithubCodeSearch call opengithub#Search(<q-args>)
 
 " Create <Plug> mappings for user-defined mappings
 nnoremap <silent> <Plug>(open-github) :call opengithub#Open()<CR>
+nnoremap <silent> <Plug>(open-github-changes) :call opengithub#OpenChanges()<CR>
 nnoremap <silent> <Plug>(open-github-code-search) :call opengithub#Search('')<CR>
 
 " Restore cpoptions

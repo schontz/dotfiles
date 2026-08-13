@@ -3,6 +3,13 @@
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# zsh: source dotfiles zshrc if not already present
+# Must run before the oh-my-zsh install: --keep-zshrc only protects an *existing*
+# ~/.zshrc, so with no file there the installer drops in its own template.
+if [ ! -f ~/.zshrc ] || [ "$(grep -c "$DOTFILES_DIR/zshrc" ~/.zshrc)" -eq 0 ]; then
+  printf "\nsource %s/zshrc\n" "$DOTFILES_DIR" >>~/.zshrc
+fi
+
 # Install ohmyzsh
 if [ ! -d ~/.oh-my-zsh ]; then
   echo "Installing oh-my-zsh"
@@ -70,11 +77,6 @@ fi
 # git: add include for gitconfig.conf
 if [ ! -f ~/.gitconfig ] || [ "$(grep -c "$DOTFILES_DIR/gitconfig.conf" ~/.gitconfig)" -eq 0 ]; then
   printf "\n[include]\n  path = %s/gitconfig.conf\n" "$DOTFILES_DIR" >>~/.gitconfig
-fi
-
-# zsh: source dotfiles zshrc if not already present
-if [ ! -f ~/.zshrc ] || [ "$(grep -c "$DOTFILES_DIR/zshrc" ~/.zshrc)" -eq 0 ]; then
-  printf "\nsource %s/zshrc\n" "$DOTFILES_DIR" >>~/.zshrc
 fi
 
 # tmux plugins

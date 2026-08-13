@@ -5,6 +5,7 @@ A Vim plugin that opens GitHub pull requests, issues, commits, and code searches
 ## Features
 
 - Open PRs/issues with a single keystroke
+- Open the PR "Changes" (file diff) tab directly
 - Open commits from commit hashes
 - Search the current repo on GitHub (code, issues, commits, and more)
 - Supports `#123` and `GH-123` notation for PRs/issues
@@ -48,7 +49,8 @@ git clone https://github.com/yourusername/open-github.vim.git
 Add a key mapping to your `.vimrc` or `init.vim`:
 
 ```vim
-nmap <leader>gh <Plug>(open-github)         " Open PR/issue/commit
+nmap <leader>gh <Plug>(open-github)              " Open PR/issue/commit
+nmap <leader>gc <Plug>(open-github-changes)      " Open PR /changes tab
 nmap <leader>gs <Plug>(open-github-code-search)  " Search repo on GitHub
 ```
 
@@ -56,6 +58,7 @@ Or for Neovim with `init.lua`:
 
 ```lua
 vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
+vim.keymap.set('n', '<leader>gc', '<Plug>(open-github-changes)', { silent = true })
 vim.keymap.set('n', '<leader>gs', '<Plug>(open-github-code-search)', { silent = true })
 ```
 
@@ -68,6 +71,12 @@ vim.keymap.set('n', '<leader>gs', '<Plug>(open-github-code-search)', { silent = 
 3. The PR/issue/commit will open in your default browser
 
 The plugin intelligently detects whether you're referencing a PR/issue or a commit and opens the appropriate GitHub page.
+
+### Opening the PR Changes tab
+
+Place your cursor on a PR reference (e.g., `#123` or `GH-456`) and run `:OpenGithubChanges` (or your mapped key for `<Plug>(open-github-changes)`). The PR's "Changes" (file diff) tab opens directly.
+
+Opens: `https://github.com/org/repo/pull/NUMBER/changes`
 
 ### Searching the repo on GitHub
 
@@ -104,6 +113,14 @@ See #1234 for more details
 ```
 Opens: `https://github.com/org/repo/pull/1234`
 
+**Opening a PR's Changes tab:**
+```
+Reviewed #1234 today
+          ^
+          cursor here, press <leader>gc
+```
+Opens: `https://github.com/org/repo/pull/1234/changes`
+
 **Opening a commit:**
 ```
 Fixed in commit abc12345
@@ -123,12 +140,14 @@ Suggested mapping:
 ```vim
 " Vim/Neovim (vimscript)
 nmap <leader>gh <Plug>(open-github)              " Open GitHub PR/issue/commit
+nmap <leader>gc <Plug>(open-github-changes)      " Open PR /changes tab
 nmap <leader>gs <Plug>(open-github-code-search)  " Search repo on GitHub
 ```
 
 ```lua
 -- Neovim (Lua)
 vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
+vim.keymap.set('n', '<leader>gc', '<Plug>(open-github-changes)', { silent = true })
 vim.keymap.set('n', '<leader>gs', '<Plug>(open-github-code-search)', { silent = true })
 ```
 
@@ -154,6 +173,7 @@ vim.keymap.set('n', '<leader>gs', '<Plug>(open-github-code-search)', { silent = 
 | Command | Description |
 |---------|-------------|
 | `:OpenGithub` | Open the GitHub PR/issue/commit under cursor |
+| `:OpenGithubChanges` | Open the "Changes" (file diff) tab for the PR under cursor |
 | `:OpenGithubCodeSearch [type]` | Prompt for a search term and open GitHub search for the current repo. Optional `type` argument (default: `code`) |
 
 ## Mappings
@@ -163,6 +183,7 @@ The plugin does not set any default mappings. You must add mappings yourself (se
 | Mapping | Mode | Description |
 |---------|------|-------------|
 | `<Plug>(open-github)` | Normal | Open PR/issue/commit under cursor |
+| `<Plug>(open-github-changes)` | Normal | Open the PR /changes tab for the reference under cursor |
 | `<Plug>(open-github-code-search)` | Normal | Prompt and open GitHub code search for the current repo |
 
 ## Troubleshooting

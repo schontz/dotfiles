@@ -59,6 +59,33 @@ function! opengithub#Open() abort
   echo 'Opening: ' . l:url
 endfunction
 
+" Open the "Changes" (file diff) tab for the PR under cursor
+function! opengithub#OpenChanges() abort
+  let l:word = expand('<cWORD>')
+  let l:pr_number = s:ExtractPRNumber(l:word)
+
+  if empty(l:pr_number)
+    echohl WarningMsg
+    echo 'No PR/issue found'
+    echohl None
+    return
+  endif
+
+  let l:repo = opengithub#GetGitHubRepo()
+
+  if empty(l:repo)
+    echohl WarningMsg
+    echo 'Not a Github repo'
+    echohl None
+    return
+  endif
+
+  let l:url = 'https://github.com/' . l:repo . '/pull/' . l:pr_number . '/changes'
+
+  call opengithub#OpenURL(l:url)
+  echo 'Opening: ' . l:url
+endfunction
+
 " Extract PR/issue number from text
 " Supports patterns: #123, GH-123, gh-123
 function! s:ExtractPRNumber(text) abort

@@ -114,12 +114,14 @@ combination.
 
 Suggested mapping: >
     " Vim/Neovim (vimscript)
-    nmap <leader>gh <Plug>(open-github)  " Open GitHub PR/issue/commit
+    nmap <leader>gh <Plug>(open-github)          " Open GitHub PR/issue/commit
+    nmap <leader>gc <Plug>(open-github-changes)  " Open PR /changes tab
 <
 
 For Neovim with Lua: >
     -- Neovim (Lua)
     vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
+    vim.keymap.set('n', '<leader>gc', '<Plug>(open-github-changes)', { silent = true })
 <
 
 ==============================================================================
@@ -127,6 +129,10 @@ COMMANDS                                                    *open-github-command
 
                                                                   *:OpenGithub*
 :OpenGithub             Open the GitHub PR/issue/commit under cursor.
+
+                                                           *:OpenGithubChanges*
+:OpenGithubChanges      Open the "Changes" (file diff) tab for the PR under
+                        cursor (appends /changes to the PR URL).
 
 ==============================================================================
 CONFIGURATION                                          *open-github-configuration*
@@ -158,7 +164,20 @@ Example 2: Open a GitHub notation reference ~
 <
 Result: Opens https://github.com/org/repo/pull/567
 
-Example 3: Open a commit hash ~
+Example 3: Open the PR changes tab ~
+
+In your .vimrc: >
+    nmap <leader>gc <Plug>(open-github-changes)
+<
+
+Then in a file: >
+    Reviewed #1234 today
+              ^
+              cursor here, press <leader>gc
+<
+Result: Opens https://github.com/org/repo/pull/1234/changes
+
+Example 4: Open a commit hash ~
 
 In your .vimrc: >
     nmap <leader>gh <Plug>(open-github)
@@ -171,7 +190,7 @@ Then in a file: >
 <
 Result: Opens https://github.com/org/repo/commit/abc12345
 
-Example 4: Neovim Lua configuration ~
+Example 5: Neovim Lua configuration ~
 
 In your init.lua: >
     vim.keymap.set('n', '<leader>gh', '<Plug>(open-github)', { silent = true })
