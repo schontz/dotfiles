@@ -16,6 +16,16 @@ if [ ! -d ~/.oh-my-zsh ]; then
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --keep-zshrc --unattended
 fi
 
+# --keep-zshrc doesn't always work: if the installer swapped our ~/.zshrc for its
+# template, the original is at ~/.zshrc.pre-oh-my-zsh. Detect that by the source
+# line being gone from ~/.zshrc but still present in the backup, then restore it.
+if [ -f ~/.zshrc.pre-oh-my-zsh ] &&
+  [ "$(grep -c "$DOTFILES_DIR/zshrc" ~/.zshrc)" -eq 0 ] &&
+  grep -q "$DOTFILES_DIR/zshrc" ~/.zshrc.pre-oh-my-zsh; then
+  echo "Restoring ~/.zshrc replaced by the oh-my-zsh installer"
+  mv -f ~/.zshrc.pre-oh-my-zsh ~/.zshrc
+fi
+
 # Install p10k
 if [ ! -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]; then
   echo "Installing powerlevel10k"
