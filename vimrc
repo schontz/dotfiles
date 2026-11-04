@@ -1221,8 +1221,8 @@ set re=0
 nmap <silent> <leader>ls <Plug>SessionLoad<CR>
 autocmd User SessionSavePre Neotree close
 
-" MacVim
-if has('gui')
+" MacVim || Vimr
+if has('gui') || has('gui_running')
   set guifont=Menlo-Regular:h20
   set background=dark
   colorscheme dracula
@@ -1231,8 +1231,4 @@ if has('gui')
   set lines=50 columns=140
   set wildmenu
   set wildmode=longest,list,full
-
-  if empty(argv())
-    cd ~/Desktop
-  endif
 endif
