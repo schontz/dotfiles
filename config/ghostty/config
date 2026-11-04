@@ -1,0 +1,25 @@
+font-family = Menlo
+font-family = Hack Nerd Font Mono
+font-size = 23
+font-thicken = true
+
+# Font-size shortcuts apply to all tabs, splits, and windows.
+keybind = all:super+==increase_font_size:1
+keybind = all:super++=increase_font_size:1
+keybind = all:super+-=decrease_font_size:1
+keybind = all:super+0=reset_font_size
+
+theme = Dracula
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+bell-features = no-system,no-audio,attention,title,border
+right-click-action = paste
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+
+macos-option-as-alt = false
+
+# Optional machine-specific overrides 
+config-file = ?config.local
