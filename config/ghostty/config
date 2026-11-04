@@ -10,6 +10,8 @@ keybind = all:super+-=decrease_font_size:1
 keybind = all:super+0=reset_font_size
 
 theme = Dracula
+window-padding-x = 8
+window-padding-y = 6
 cursor-style-blink = false
 shell-integration-features = no-cursor
 
